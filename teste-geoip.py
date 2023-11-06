@@ -6,7 +6,7 @@ ipReceived = Input("Insert IP: ")
 
 returndata = reader.city(ipReceived)
 
-print (returndata.country.iso_code)
+print ("Country: " + returndata.country.iso_code)
 print (returndata.city.name)
 print (returndata.subdivisions.most_specific.name)
 
