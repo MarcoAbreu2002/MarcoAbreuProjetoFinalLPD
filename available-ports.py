@@ -13,7 +13,7 @@ def scan_ports(ip, ports, s):
             pass
     return open_ports
 
-remote_ip ="127.0.0.1"    #input("Insert the ip to scan: ")
+remote_ip  = input("Insert the ip to scan: ")
 port_range = range(1,1025)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 open_ports = scan_ports(remote_ip, port_range,s)
