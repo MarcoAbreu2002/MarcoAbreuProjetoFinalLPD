@@ -7,12 +7,11 @@ pickle_file = open('port_description.dat', 'rb')
 data = skill = pickle.load(pickle_file)
 
 def get_port_description(port):
-   try:
-       service_name = socket.getservbyport(port)
-       return f"Service: {service_name}"
-   except OSError:
-       return f"No Known service for port {port}"
-
+    try:
+        service_name = socket.getservbyport(port)
+        return f"Service: {service_name}"
+    except OSError:
+        return f"No Known service for port {port}"
 
 def scantcp(r1, r2):
     try:
@@ -21,11 +20,11 @@ def scantcp(r1, r2):
             socket.setdefaulttimeout(c)
             result = sock.connect_ex((rmip, port))
             if result == 0:
-	    	description = data.get(port, 'Not in Database')
-		if description == 'Not in Database':
-			description = get_port_description(port)
+                description = data.get(port, 'Not in Database')
+                if description == 'Not in Database':
+                    description = get_port_description(port)
                 print('Port Open:-->\t', port, '--', description)
-            sock.close()
+                sock.close()
     except Exception as e:
         print(e)
 
@@ -98,7 +97,7 @@ try:
 
         # Move the join inside the loop for real-time results
         port_thread.join()
-        #print(f"Thread {port_thread.ident} finished")
+        print(f"Thread {port_thread.ident} finished")
 
 except Exception as e:
     print(e)
