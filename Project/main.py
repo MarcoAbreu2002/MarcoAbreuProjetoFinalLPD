@@ -18,7 +18,7 @@ def menu():
     match choice.upper():
         case "A":
             print("Running available-ports.py...")
-            call(['python', 'available-ports.py'])
+            call(['python', 'portscanner.py'])
         case "B":
             print("2")
             login()
