@@ -58,14 +58,14 @@ ports_by_one_thread = 30
 
  # tn number of port handled by one thread
 
-total_threads = total_ports / ports_by_one_thread  # tnum number of threads
+total_threads = total_ports // ports_by_one_thread  # tnum number of threads
 if total_ports % ports_by_one_thread != 0:
     total_threads = total_threads + 1
 if total_threads > 300:
-    ports_by_one_thread = total_ports / 300
+    ports_by_one_thread = total_ports // 300
     if total_ports % 300 != 0:
         ports_by_one_thread = ports_by_one_thread + 1
-    total_threads = total_ports / ports_by_one_thread
+    total_threads = total_ports // ports_by_one_thread
     if total_ports % total_threads != 0:
         total_threads = total_threads + 1
 threads = []
