@@ -1,6 +1,6 @@
 import socket
-host = "127.0.0.1" #Server address
-port = 123 #Port of Server
+host = "192.168.1.101" #Server address
+port = 122 #Port of Server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host,port)) #bind server
 s.listen()
