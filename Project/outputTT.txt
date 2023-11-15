@@ -184,9 +184,9 @@
 445 : Microsoft-DS (Directory Services) Active Directory,Windows shares -  TCP and UDP
 445 : Microsoft-DS (Directory Services) SMB  file sharing - UDP Assigned TCP
 464 : Kerberos Change/Set password -  TCP and UDP
-465[note 1] : SMTP over implicit SSL (obsolete)- No UDP TCP
-465[note 1] : URL Rendezvous Directory for Cisco SSM (primary usage assignment)- No UDP TCP
-465[note 1] : Authenticated SMTP  over TLS/SSL (SMTPS) (alternative usage assignment)- No UDP TCP
+465 : SMTP over implicit SSL (obsolete)- No UDP TCP
+465 : URL Rendezvous Directory for Cisco SSM (primary usage assignment)- No UDP TCP
+465 : Authenticated SMTP  over TLS/SSL (SMTPS) (alternative usage assignment)- No UDP TCP
 475 : tcpnethaspsrv, Aladdin Knowledge Systems Hasp services -  TCP and UDP
 476 : Centro Software ERP ports -  Unofficial TCP and UDP 
 477 : Centro Software ERP ports -  Unofficial TCP and UDP 
@@ -1430,7 +1430,8 @@
 5223 : Extensible Messaging and Presence Protocol (XMPP) client connection over SSL -  Unofficial TCP
 5228 : HP Virtual Room Service -  TCP
 5228 : Google Play, Android Cloud to Device Messaging Service, Google Cloud Messaging -  Unofficial TCP
-5235-5236 : Firebase Cloud Messaging-  Unofficial TCP
+5235 : Firebase Cloud Messaging-  Unofficial TCP
+5236 : Firebase Cloud Messaging-  Unofficial TCP
 5236 : 
 5242 : Viber-  Unofficial TCP and UDP
 5243 : Viber-  Unofficial TCP and UDP
@@ -2011,7 +2012,10 @@
 8555 : Symantec DLP OCR Engine-  Unofficial TCP
 8555 : Chia JSON-RPC server-  Unofficial TCP
 8580 : Freegate, an Internet anonymizer and proxy tool-  Unofficial TCP and UDP
-8611-8614 : Canon BubbleJet Network Protocol-  TCP and UDP
+8611 : Canon BubbleJet Network Protocol-  TCP and UDP
+8612 : Canon BubbleJet Network Protocol-  TCP and UDP
+8613 : Canon BubbleJet Network Protocol-  TCP and UDP
+8614 : Canon BubbleJet Network Protocol-  TCP and UDP
 8629 : Tibero database[citation needed] -  Unofficial TCP
 8642 : Lotus Notes Traveler auto synchronization for Windows Mobile and Nokia devices-  Unofficial TCP
 8691 : Ultra Fractal, a fractal generation and rendering software application – distributed calculations over networked computers-  Unofficial TCP
@@ -12452,8 +12456,109 @@
 25565 : Minecraft (Java Edition) multiplayer server-  Unofficial TCP
 25565 : Minecraft (Java Edition) multiplayer server query- Unofficial UDP 
 25575 : Minecraft (Java Edition) multiplayer server RCON- Unofficial UDP 
-25600-25700 : SamsidParty Operational Ports -  Unofficial TCP and UDP
-25734-25735 : SOLIDWORKS SolidNetworkLicense Manager-  Unofficial TCP and UDP
+25600 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25601 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25602 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25603 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25604 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25605 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25606 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25607 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25608 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25609 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25610 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25611 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25612 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25613 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25614 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25615 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25616 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25617 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25618 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25619 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25620 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25621 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25622 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25623 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25624 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25625 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25626 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25627 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25628 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25629 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25630 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25631 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25632 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25633 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25634 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25635 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25636 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25637 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25638 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25639 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25640 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25641 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25642 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25643 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25644 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25645 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25646 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25647 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25648 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25649 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25650 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25651 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25652 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25653 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25654 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25655 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25656 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25657 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25658 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25659 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25660 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25661 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25662 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25663 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25664 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25665 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25666 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25667 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25668 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25669 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25670 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25671 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25672 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25673 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25674 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25675 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25676 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25677 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25678 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25679 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25680 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25681 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25682 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25683 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25684 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25685 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25686 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25687 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25688 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25689 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25690 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25691 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25692 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25693 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25694 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25695 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25696 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25697 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25698 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25699 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25700 : SamsidParty Operational Ports - Unofficial TCP and UDP
+25734 : SOLIDWORKS SolidNetworkLicense Manager-  Unofficial TCP and UDP
+25735 : SOLIDWORKS SolidNetworkLicense Manager-  Unofficial TCP and UDP
 25826 : collectd default port- Unofficial UDP 
 26000 : id Software's Quake server -  TCP and UDP
 26000 : EVE Online -  Unofficial TCP
@@ -13021,8 +13126,22 @@
 41795 : Crestron Terminal Port- Crestron Electronics -  TCP and UDP
 41796 : Crestron Secure Control Port- Crestron Electronics - No UDP TCP
 41797 : Crestron Secure Terminal Port- Crestron Electronics - No UDP TCP
-42081-42090 : Zippin - Zippin Stores -  TCP and UDP
-42590-42595 : Glue - MakePro X -  TCP and UDP
+42081 : Zippin - Zippin Stores - TCP and UDP
+42082 : Zippin - Zippin Stores - TCP and UDP
+42083 : Zippin - Zippin Stores - TCP and UDP
+42084 : Zippin - Zippin Stores - TCP and UDP
+42085 : Zippin - Zippin Stores - TCP and UDP
+42086 : Zippin - Zippin Stores - TCP and UDP
+42087 : Zippin - Zippin Stores - TCP and UDP
+42088 : Zippin - Zippin Stores - TCP and UDP
+42089 : Zippin - Zippin Stores - TCP and UDP
+42090 : Zippin - Zippin Stores - TCP and UDP
+42590 : Glue - MakePro X - TCP and UDP
+42591 : Glue - MakePro X - TCP and UDP
+42592 : Glue - MakePro X - TCP and UDP
+42593 : Glue - MakePro X - TCP and UDP
+42594 : Glue - MakePro X - TCP and UDP
+42595 : Glue - MakePro X - TCP and UDP
 42999 : Curiosity-  TCP
 43110 : ZeroNet web UI default port-  Unofficial TCP
 43594 : RuneScape-  Unofficial TCP and UDP 
