@@ -1904,7 +1904,17 @@
 7777 : Terraria default server -  Unofficial TCP
 7777 : San Andreas Multiplayer (SA-MP) default port server - Unofficial UDP 
 7777 : SCP: Secret Laboratory Multiplayer Server - Unofficial UDP 
-7777-7788 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7777 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7779 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7780 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7781 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7782 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7783 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7784 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7785 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7786 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7787 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP 
+7788 : Common default Steam game server ports(Ark, L4D2, etc.) - UDP  
 7777 : Unreal Tournament series default server[citation needed] -  Unofficial TCP and UDP 
 7778 : Unreal Tournament series default server[citation needed] -  Unofficial TCP and UDP 
 7779 : Unreal Tournament series default server[citation needed] -  Unofficial TCP and UDP 
@@ -19861,7 +19871,7 @@
 55841 : Certificate Management over CMS- No UDP Unofficial TCP 
 55842 : Certificate Management over CMS- No UDP Unofficial TCP 
 55843 : Certificate Management over CMS- No UDP Unofficial TCP 
-55844 : Certificate Management over CMS- No UDP Unofficial TCP 
+55844 : Certificate Management over CMS- No UDP Unofficial TCP  
 55845 : Certificate Management over CMS- No UDP Unofficial TCP 
 55846 : Certificate Management over CMS- No UDP Unofficial TCP 
 55847 : Certificate Management over CMS- No UDP Unofficial TCP 

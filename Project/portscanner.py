@@ -57,7 +57,7 @@ elif conect == 'H' or conect == 'h':
 else:
     print('\twrong Input')
 
-print("\nMohit's port Scanner is working on ", rmip)
+print("\nScanning in progress... ", rmip)
 print('*' * 60)
 
 t1 = datetime.now()
@@ -99,10 +99,11 @@ try:
         port_thread.join()
         print(f"Thread {port_thread.ident} finished")
 
-except Exception as e:
-    print(e)
+except KeyboardInterrupt:
+   print("\nUser interrupted. Stopping the port scan.")
 
 print('Exiting Main Thread')
 t2 = datetime.now()
 total = t2 - t1
 print('Scanning complete in ', total)
+
