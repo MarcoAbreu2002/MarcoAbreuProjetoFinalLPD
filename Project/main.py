@@ -11,7 +11,7 @@ def menu():
     choice = input("""
                A: Portos de Rede Disponíveis
                B: UDP flood (DoS)
-               Q: SYN flood (TCP SYN)
+               C: SYN flood (TCP SYN)
 
                Escolha a opção desejada: """)
 
@@ -25,9 +25,10 @@ def menu():
                 print("Running udp_flood.py...")
                 udp_flood_process = subprocess.Popen(['python', 'udpflood.py'])
                 udp_flood_process.wait()
-            case "Q":
-                print("Q")
-                sys.exit()
+            case "C":
+                print("Running synflood.py...")
+                syn_flood_process = subprocess.Popen(['python', 'synflood.py'])
+                syn_flood_process.wait()
             case _:
                 print("ERROR")
                 menu()
