@@ -2,7 +2,8 @@ import sys
 import subprocess
 
 def main():
-    menu()
+    while True:
+        menu()
 
 def menu():
     print("************Aplicação de Segurança Informática**************")
@@ -12,6 +13,7 @@ def menu():
                A: Portos de Rede Disponíveis
                B: UDP flood (DoS)
                C: SYN flood (TCP SYN)
+               Q: Quit
 
                Escolha a opção desejada: """)
 
@@ -29,11 +31,13 @@ def menu():
                 print("Running synflood.py...")
                 syn_flood_process = subprocess.Popen(['python', 'synflood.py'])
                 syn_flood_process.wait()
+            case "Q":
+                print("Exiting the program.")
+                sys.exit()
             case _:
-                print("ERROR")
-                menu()
+                print("ERROR: Invalid choice.")
     except KeyboardInterrupt:
-        print("\nUser interrupted. Stopping the main program.")
+        print("\nUser interrupted. Returning to the menu.")
 
 if __name__ == "__main__":
     # The program is initiated here

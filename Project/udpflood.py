@@ -1,5 +1,9 @@
 from scapy.all import IP, UDP, send
-import time
+import threading
+
+def send_packet(target_ip, target_port, msg_to_send):
+    udp_packet = IP(dst=target_ip) / UDP(dport=target_port) / msg_to_send
+    send(udp_packet)
 
 try:
     # Get user input for target IP, target port, and number of packets
@@ -8,12 +12,16 @@ try:
     num_packets = int(input("Enter the number of packets to send: "))
     msg_to_send = input("Enter a message to send to the target: ")
 
-    # Craft a simple UDP packet
-    udp_packet = IP(dst=target_ip) / UDP(dport=target_port) / msg_to_send
-
-    # Send UDP packets in a loop with a small interval
+    # Create a thread for each packet and start them concurrently
+    threads = []
     for _ in range(num_packets):
-        send(udp_packet)
+        thread = threading.Thread(target=send_packet, args=(target_ip, target_port, msg_to_send))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
 
 except KeyboardInterrupt:
     print("\nUser interrupted. Stopping the script.")

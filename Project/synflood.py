@@ -1,5 +1,7 @@
 from scapy.all import *
 import threading
+import signal
+import sys
 
 # Global variables
 send_lock = threading.Lock()
@@ -21,8 +23,20 @@ def send_packets_thread(target_ip, num_packets):
             print(f"Thread sent {num_packets} packets successfully.")
     except KeyboardInterrupt:
         print("Thread KeyboardInterrupt. Stopping the thread gracefully.")
+    finally:
+        stop_event.set()
+
+def signal_handler(sig, frame):
+    print("Main KeyboardInterrupt. Stopping threads gracefully.")
+    # Set the stop event to signal threads to stop
+    stop_event.set()
+    # Wait for threads to finish
+    sys.exit(0)
 
 def send_packets(target_ip, num_packets, num_threads):
+    # Register the signal handler
+    signal.signal(signal.SIGINT, signal_handler)
+
     # Create threads
     threads = []
     for _ in range(num_threads):
@@ -40,12 +54,7 @@ def send_packets(target_ip, num_packets, num_threads):
 
         print(f"Sent {num_threads * num_packets} packets successfully.")
     except KeyboardInterrupt:
-        print("Main KeyboardInterrupt. Stopping threads gracefully.")
-        # Set the stop event to signal threads to stop
-        stop_event.set()
-        # Wait for threads to finish
-        for thread in threads:
-            thread.join()
+        pass
 
 if __name__ == "__main__":
     target_ip = input("Enter the target IP: ")
