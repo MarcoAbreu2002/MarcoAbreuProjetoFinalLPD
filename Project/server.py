@@ -35,16 +35,18 @@ def handle_client(client_socket, address):
 def broadcast(username, message, sender_socket):
     for client in clients:
         if client != sender_socket:
+            print("Entrou nome diff: " + message)
             try:
-                message = username + ': ' + message
-                client.send(message.encode('utf-8'))
+                message_to_all = username + ': ' + message
+                client.send(message_to_all.encode('utf-8'))
             except:
                 # Remove the broken connection
                 remove_client(client)
-        else:
+        elif client == sender_socket:
+            print("Igual: " + message)
             try:
-                message = 'me: ' + message
-                client.send(message.encode('utf-8'))
+                message_to_self = 'me: ' + message
+                client.send(message_to_self.encode('utf-8'))
             except:
                 # Remove the broken connection
                 remove_client(client)
