@@ -1,4 +1,5 @@
 import socket
+import os
 import threading
 
 def receive_messages(client_socket):
@@ -18,6 +19,8 @@ def send_messages(client_socket, username):
         try:
             # Prompt the user to insert their message
             message = input()
+            #os.system('clear')
+            print("\033[F\033[K",end = "",flush = True)
             # Check if the user wants to exit
             if message.lower() == "exit":
                 print("Exiting chat...")
