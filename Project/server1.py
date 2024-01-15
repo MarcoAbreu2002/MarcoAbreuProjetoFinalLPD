@@ -12,10 +12,14 @@ from integrity import generate_digest, verify_digest
 
 # Função para encriptar a chave privada
 def encrypt_private_key(private_key, password):
-    key = get_random_bytes(32)
-    cipher = AES.new(key, AES.MODE_EAX)
-    ciphertext, tag = cipher.encrypt_and_digest(private_key.export_key())
-    return key + cipher.nonce + tag + ciphertext
+    # Generate a key using scrypt with the provided password
+    key = scrypt(password.encode(), b'salt', 32, N=2**14, r=8, p=1)
+    # Initialize the AES cipher in CBC mode with the generated key
+    cipher = AES.new(key, AES.MODE_CBC)
+    # Pad the message to the appropriate block size
+    padded_message = cipher.encrypt(private_key.ljust((len(message) // 16 + 1) * 16))
+    # Return the base64-encoded ciphertext and the initialization vector (IV)
+    return base64.b64encode(cipher.iv + padded_message).decode()
 
 def decrypt_private_key(encrypted_private_key, password):
     key = encrypted_private_key[:32]
@@ -24,7 +28,8 @@ def decrypt_private_key(encrypted_private_key, password):
     ciphertext = encrypted_private_key[60:]
     cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
     try:
-        private_key = RSA.import_key(cipher.decrypt_and_verify(ciphertext, tag))
+        decrypted_data = cipher.decrypt(ciphertext)
+        private_key = RSA.import_key(decrypted_data)
         return private_key
     except ValueError as e:
         print(f"Falha na desencriptação da chave privada: {e}")
@@ -54,6 +59,7 @@ class Server:
         else:
             # Se não existe, gera uma nova chave privada
             self.private_key, self.public_key = generate_key_pair()
+            print(self.private_key.export_key().decode('utf-8'))
             # Encripta e salva a chave privada
             password = input("Digite uma senha para encriptar a chave privada: ")
             encrypted_private_key = encrypt_private_key(
@@ -80,7 +86,7 @@ class Server:
 
     def store_message(self, sender, message, sender_public_key):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        filename = f"{sender}_messages.pem"
+        filename = f"{sender}_messages.txt"
         formatted_message = f'[{timestamp}] {sender}: {message}\n'
         encrypted_formatted_message = encrypt_rsa(formatted_message.encode('utf-8'), sender_public_key)
 
@@ -89,7 +95,7 @@ class Server:
 
     def encrypt_file(self, plaintext, public_key):
         ciphertext = encrypt_rsa(plaintext, public_key)
-        with open('log_messages_encrypted.pem', 'wb') as file:
+        with open('log_messages_encrypted.txt', 'wb') as file:
             file.write(ciphertext)
 
     def send_mac_key_encrypted(self, client_socket, client_public_key):
@@ -183,7 +189,7 @@ class Server:
 
     def send_log_messages(self, client_socket, sender_username):
         try:
-            filename = f"{sender_username}_messages.pem"
+            filename = f"{sender_username}_messages.txt"
             with open(filename, 'rb') as file:
                 encrypted_contents = file.read()
 
