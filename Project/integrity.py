@@ -1,12 +1,15 @@
 import hmac
 import hashlib
 
-class Integrity:
 
-    def generate_digest(message, mac_key, mac_algorithm):
-        secret_key = bytes(mac_key)
-        mac = hmac.new(secret_key, message, hashlib.new(mac_algorithm))
-        return mac.digest()
+@staticmethod
+def generate_digest(message, key, mac_algorithm):
+    # Ensure 'key' is bytes
+    key = key.encode() if isinstance(key, str) else key
+    # Use a proper hashing algorithm
+    hash_obj = hashlib.new(mac_algorithm, key + message)
+    return hash_obj.digest()
 
-    def verify_digest(digest, computed_digest):
-        return hmac.compare_digest(digest, computed_digest)
+@staticmethod
+def verify_digest(digest, computed_digest):
+    return hmac.compare_digest(digest, computed_digest)

@@ -26,3 +26,49 @@
 [2024-01-12 16:19:00] Adam: hey
 [2024-01-12 16:19:02] Adam: hey
 [2024-01-12 16:19:02] Adam: hey
+[2024-01-12 22:32:47] Mark: & C:/Users/marco/AppData/Local/Microsoft/WindowsApps/python3.11.exe c:/Users/marco/Desktop/myrepo/myrepo/Project/client1.py
+[2024-01-12 22:32:53] Mark: & C:/Users/marco/AppData/Local/Microsoft/WindowsApps/python3.11.exe c:/Users/marco/Desktop/myrepo/myrepo/Project/client1.py
+[2024-01-12 22:33:10] Adam: hello
+[2024-01-13 12:23:18] Adam: & C:/Users/marco/AppData/Local/Microsoft/WindowsApps/python3.11.exe c:/Users/marco/Desktop/myrepo/myrepo/Project/client1.py
+[2024-01-13 12:23:23] Adam: & C:/Users/marco/AppData/Local/Microsoft/WindowsApps/python3.11.exe c:/Users/marco/Desktop/myrepo/myrepo/Project/client1.py
+[2024-01-13 12:23:27] Adam: & C:/Users/marco/AppData/Local/Microsoft/WindowsApps/python3.11.exe c:/Users/marco/Desktop/myrepo/myrepo/Project/client1.py
+[2024-01-13 12:23:32] Adam: & C:/Users/marco/AppData/Local/Microsoft/WindowsApps/python3.11.exe c:/Users/marco/Desktop/myrepo/myrepo/Project/client1.py
+[2024-01-13 12:23:55] Zac: hello
+[2024-01-13 12:24:02] Zac: gey
+[2024-01-13 12:24:03] Zac: hey
+[2024-01-13 12:24:08] Adam: hey
+[2024-01-13 12:24:09] Adam: hey
+[2024-01-14 18:25:55] Adam: okok
+[2024-01-14 18:26:27] Zac: Hello
+[2024-01-14 18:30:35] Adam: Hello
+[2024-01-14 18:30:52] Zac: Hello
+[2024-01-14 18:39:14] Adam: Hey
+[2024-01-14 18:39:31] Zac: Hello
+[2024-01-14 18:50:24] Adam: hello
+[2024-01-14 18:50:32] Zac: Hello
+[2024-01-14 18:53:27] Zac: hey
+[2024-01-14 18:54:56] Zac: hello
+[2024-01-14 19:12:57] sdf: sdf
+[2024-01-14 19:14:05] dsa: Hey
+[2024-01-14 19:15:16] qweqwe: hey
+[2024-01-14 19:17:13] aaaa: hry
+[2024-01-14 19:19:40] ooo: ooo
+[2024-01-14 19:24:16] pp: ok
+[2024-01-14 19:26:28] kkk: kkk
+[2024-01-14 19:33:38] qewr: hello
+[2024-01-14 19:38:56] as: das
+[2024-01-14 19:39:55] as: ll
+[2024-01-14 19:39:56] as: ll
+[2024-01-14 19:41:27] adam: hello
+[2024-01-14 19:48:09] adsffd: hey
+[2024-01-14 19:50:30] pl: okk
+[2024-01-14 19:54:58] plpl: okko
+[2024-01-14 19:55:38] plpl: ok
+[2024-01-14 19:56:14] sdfsfd: asdas
+[2024-01-14 19:56:35] dfsd: asdf
+[2024-01-14 19:58:18] poj: çlk
+[2024-01-14 19:58:28] dfghjk: zxcvbn
+[2024-01-14 20:00:15] ok: kkk
+[2024-01-14 20:00:35] ooo: okok
+[2024-01-14 20:09:38] Joe: Hello
+[2024-01-14 20:10:24] Adam: Hey Joe
