@@ -1,6 +1,15 @@
+import base64
+import binascii
+import getpass
+from hashlib import scrypt, sha256
 import os
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
+from Crypto import Random
 import socket
+from Crypto.Cipher import AES, PKCS1_OAEP
 import threading
+from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Cipher import AES
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
@@ -9,30 +18,18 @@ from datetime import datetime
 from encryption import generate_key_pair, encrypt_rsa, decrypt_rsa
 from integrity import generate_digest, verify_digest
 
+def encrypt_private_key(private_key, passphrase):
+    # Encrypt the private key with the passphrase
+    encrypted_key = private_key.export_key(passphrase=passphrase, pkcs=8, protection="scryptAndAES128-CBC")
+    return encrypted_key
 
-# Função para encriptar a chave privada
-def encrypt_private_key(private_key, password):
-    # Generate a key using scrypt with the provided password
-    key = scrypt(password.encode(), b'salt', 32, N=2**14, r=8, p=1)
-    # Initialize the AES cipher in CBC mode with the generated key
-    cipher = AES.new(key, AES.MODE_CBC)
-    # Pad the message to the appropriate block size
-    padded_message = cipher.encrypt(private_key.ljust((len(message) // 16 + 1) * 16))
-    # Return the base64-encoded ciphertext and the initialization vector (IV)
-    return base64.b64encode(cipher.iv + padded_message).decode()
-
-def decrypt_private_key(encrypted_private_key, password):
-    key = encrypted_private_key[:32]
-    nonce = encrypted_private_key[32:44]
-    tag = encrypted_private_key[44:60]
-    ciphertext = encrypted_private_key[60:]
-    cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+def decrypt_private_key(encrypted_key_data, passphrase):
+    # Decrypt the private key
     try:
-        decrypted_data = cipher.decrypt(ciphertext)
-        private_key = RSA.import_key(decrypted_data)
+        private_key = RSA.import_key(encrypted_key_data, passphrase=passphrase)
         return private_key
-    except ValueError as e:
-        print(f"Falha na desencriptação da chave privada: {e}")
+    except ValueError:
+        # Handle incorrect password or decryption failure
         return None
 
 class Server:
@@ -46,26 +43,24 @@ class Server:
         self.private_key = None
         self.public_key = None
 
-        # Verifica se a chave privada já está armazenada
+                # Your existing code with modifications
         if os.path.exists("server_private_key_encrypted.bin"):
             with open("server_private_key_encrypted.bin", "rb") as f:
                 encrypted_private_key = f.read()
             password = input("Digite a senha para desencriptar a chave privada: ")
             self.private_key = decrypt_private_key(encrypted_private_key, password)
+            print(self.private_key.export_key())
+            print(self.private_key.publickey().export_key().decode('utf-8'))
             if self.private_key is None:
-                # Senha incorreta ou falha na desencriptação
                 print("Senha incorreta ou falha na desencriptação da chave privada. Saindo.")
                 return
         else:
-            # Se não existe, gera uma nova chave privada
             self.private_key, self.public_key = generate_key_pair()
-            print(self.private_key.export_key().decode('utf-8'))
-            # Encripta e salva a chave privada
+            print(self.private_key.export_key())
+            print(self.public_key.export_key())
             password = input("Digite uma senha para encriptar a chave privada: ")
-            encrypted_private_key = encrypt_private_key(
-                self.private_key,
-                password
-            )
+            encrypted_private_key = encrypt_private_key(self.private_key, password)
+            # Save the encrypted private key to a file
             with open("server_private_key_encrypted.bin", "wb") as f:
                 f.write(encrypted_private_key)
 
