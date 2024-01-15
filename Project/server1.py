@@ -19,25 +19,6 @@ from datetime import datetime
 from encryption import generate_key_pair, encrypt_rsa, decrypt_rsa
 from integrity import generate_digest, verify_digest
 
-# Create a SQLite database connection
-conn = sqlite3.connect('MESI_LPD.db')
-
-# Create a cursor object
-cursor = conn.cursor()
-
-# Execute SQL command to create a 'messages' table
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        sender TEXT,
-        message TEXT,
-        timestamp DATETIME
-    )
-''')
-
-# Commit the changes
-conn.commit()
-
 def encrypt_private_key(private_key, passphrase):
     # Encrypt the private key with the passphrase
     encrypted_key = private_key.export_key(passphrase=passphrase, pkcs=8, protection="scryptAndAES128-CBC")
@@ -69,8 +50,9 @@ class Server:
                 encrypted_private_key = f.read()
             password = input("Digite a senha para desencriptar a chave privada: ")
             self.private_key = decrypt_private_key(encrypted_private_key, password)
-            print(self.private_key.export_key())
-            print(self.private_key.publickey().export_key().decode('utf-8'))
+            self.public_key = self.private_key.public_key()
+	   # print(self.private_key.export_key())
+           # print(self.private_key.publickey().export_key().decode('utf-8'))
             if self.private_key is None:
                 print("Senha incorreta ou falha na desencriptação da chave privada. Saindo.")
                 return
@@ -90,6 +72,32 @@ class Server:
     def generate_user_mac_key(self):
         return get_random_bytes(32)  # 32 bytes for a 256-bit key
 
+    def setup_database(self):
+        try:
+            # Create a new SQLite connection and cursor
+            conn = sqlite3.connect('MESI_LPD.db')
+            cursor = conn.cursor()
+
+            # Execute SQL command to create a 'messages' table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS messages (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    sender TEXT,
+                    message TEXT,
+                    timestamp DATETIME
+                )
+            ''')
+
+            # Commit the changes
+            conn.commit()
+
+        except Exception as e:
+            print(f"Error setting up the database: {e}")
+
+        finally:
+            # Close the cursor and connection
+            cursor.close()
+
     def register_user(self, username, client_socket, client_public_key):
         mac_key = self.generate_user_mac_key()
         self.users[username] = {
@@ -101,13 +109,22 @@ class Server:
 
     def store_message(self, sender, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        try:
+            # Create a new SQLite connection and cursor
+            conn = sqlite3.connect('MESI_LPD.db')
+            cursor = conn.cursor()
+            # Insert message into the 'messages' table
+            cursor.execute('INSERT INTO messages (sender, message, timestamp) VALUES (?, ?, ?)',
+                           (sender, message, timestamp))
+            # Commit the changes
+            conn.commit()
+        except Exception as e:
+            print(f"Error storing message in the database: {e}")
+        finally:
+            # Close the cursor and connection
+            cursor.close()
+            conn.close()
 
-        # Insert message into the 'messages' table
-        cursor.execute('INSERT INTO messages (sender, message, timestamp) VALUES (?, ?, ?)',
-                       (sender, message, timestamp))
-
-        # Commit the changes
-        conn.commit()
 
     def encrypt_file(self, plaintext, public_key):
         ciphertext = encrypt_rsa(plaintext, public_key)
@@ -127,10 +144,11 @@ class Server:
 
     def send_public_key(self, client_socket):
         public_key_bytes = self.public_key.export_key()
-        client_socket.sendall(self.private_key.publickey().export_key().decode('utf-8'))
+        client_socket.sendall(public_key_bytes)
 
     def handle_client(self, client_socket, client_address):
         username = None
+        self.setup_database()
         try:
             data = client_socket.recv(2048)
             username = data.decode('utf-8')
