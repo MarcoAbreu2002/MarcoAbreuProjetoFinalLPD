@@ -3,6 +3,7 @@ import binascii
 import getpass
 from hashlib import scrypt, sha256
 import os
+import sqlite3
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
 from Crypto import Random
@@ -17,6 +18,25 @@ from Crypto.Util.Padding import pad, unpad
 from datetime import datetime
 from encryption import generate_key_pair, encrypt_rsa, decrypt_rsa
 from integrity import generate_digest, verify_digest
+
+# Create a SQLite database connection
+conn = sqlite3.connect('MESI_LPD.db')
+
+# Create a cursor object
+cursor = conn.cursor()
+
+# Execute SQL command to create a 'messages' table
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender TEXT,
+        message TEXT,
+        timestamp DATETIME
+    )
+''')
+
+# Commit the changes
+conn.commit()
 
 def encrypt_private_key(private_key, passphrase):
     # Encrypt the private key with the passphrase
@@ -43,7 +63,7 @@ class Server:
         self.private_key = None
         self.public_key = None
 
-                # Your existing code with modifications
+        # Your existing code with modifications
         if os.path.exists("server_private_key_encrypted.bin"):
             with open("server_private_key_encrypted.bin", "rb") as f:
                 encrypted_private_key = f.read()
@@ -79,14 +99,15 @@ class Server:
         }
         print(f"Generated MAC key for {username}: {mac_key.hex()}")
 
-    def store_message(self, sender, message, sender_public_key):
+    def store_message(self, sender, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        filename = f"{sender}_messages.txt"
-        formatted_message = f'[{timestamp}] {sender}: {message}\n'
-        encrypted_formatted_message = encrypt_rsa(formatted_message.encode('utf-8'), sender_public_key)
 
-        with open(filename, 'a', encoding='utf-8') as file:
-            file.write(encrypted_formatted_message.decode('utf-8', errors='ignore'))
+        # Insert message into the 'messages' table
+        cursor.execute('INSERT INTO messages (sender, message, timestamp) VALUES (?, ?, ?)',
+                       (sender, message, timestamp))
+
+        # Commit the changes
+        conn.commit()
 
     def encrypt_file(self, plaintext, public_key):
         ciphertext = encrypt_rsa(plaintext, public_key)
@@ -106,7 +127,7 @@ class Server:
 
     def send_public_key(self, client_socket):
         public_key_bytes = self.public_key.export_key()
-        client_socket.sendall(public_key_bytes)
+        client_socket.sendall(self.private_key.publickey().export_key().decode('utf-8'))
 
     def handle_client(self, client_socket, client_address):
         username = None
@@ -152,7 +173,7 @@ class Server:
                         self.send_log_messages(client_socket, username)
                     else:
                         self.broadcast(message, username)
-                        self.store_message(username, decrypted_message, sender_public_key)
+                        self.store_message(username, decrypted_message)
                 else:
                     print(f"Integrity verification failed for the received message.")
         except Exception as e:
@@ -184,13 +205,16 @@ class Server:
 
     def send_log_messages(self, client_socket, sender_username):
         try:
-            filename = f"{sender_username}_messages.txt"
-            with open(filename, 'rb') as file:
-                encrypted_contents = file.read()
+            # Retrieve messages from the 'messages' table
+            cursor.execute('SELECT message, timestamp FROM messages WHERE sender = ?', (sender_username,))
+            messages = cursor.fetchall()
 
-            hash_to_send = generate_digest(encrypted_contents, self.users[sender_username]['mac_key'], 'sha256')
-            data_to_send = encrypted_contents + b' : ' + hash_to_send
-            client_socket.sendall(data_to_send)
+            for encrypted_message, timestamp in messages:
+                # Decrypt and send messages to the client
+                decrypted_message = decrypt_rsa(encrypted_message, self.private_key)
+                message = decrypted_message.decode('utf-8')
+                data_to_send = f"[{timestamp}] {sender_username}: {message}\n"
+                client_socket.sendall(data_to_send.encode('utf-8'))
         except Exception as e:
             print(f"Failed to send log messages to {sender_username}: {e}")
 
@@ -206,6 +230,9 @@ class Server:
                 client_handler.start()
         except KeyboardInterrupt:
             print("Server shutdown.")
+
+        # Close the database connection
+        conn.close()
 
 server = Server('127.0.0.1', 5555)
 server.start()
