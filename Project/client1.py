@@ -3,7 +3,7 @@ import threading
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 from integrity import generate_digest, verify_digest
-from encryption import generate_key_pair, encrypt_rsa, decrypt_rsa
+from encryption import generate_key_pair, encrypt_rsa, decrypt_rsa, decrypt_rsa_in_chunks
 
 class Client:
     def __init__(self, host, port, username):
@@ -50,23 +50,29 @@ class Client:
         try:
             while True:
                 data = self.client_socket.recv(2048)
+                print("Received data size:", len(data))
                 if not data:
                     break
                 # Separate message and digest
                 message, received_digest = data.split(b' : ')
-
-                generated_digest = generate_digest(message,self.mac_key,'sha256')
+                generated_digest = generate_digest(message, self.mac_key, 'sha256')
                 # Verify the integrity of the received message
                 is_integrity_verified = verify_digest(received_digest, generated_digest)
-
                 if is_integrity_verified:
                     print("Integrity verified")
-                    # Decrypt the received message using the client's private key
-                    decrypted_message = decrypt_rsa(message, self.client_private_key)
+                    # Choose decryption method based on the size of the received message
+                    if len(message) <= 1500:
+                        # Use normal decryption for small messages
+                        decrypted_message = decrypt_rsa(message, self.client_private_key)
+                    else:
+                        # Use chunked decryption for larger messages
+                        decrypted_message = decrypt_rsa_in_chunks(message, self.client_private_key)
+                    # Convert the decrypted message to utf-8
                     message = decrypted_message.decode('utf-8')
                     print(message)
         except Exception as e:
             print(f"Error receiving message: {e}")
+
 
     def start(self):
         try:
