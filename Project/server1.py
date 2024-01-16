@@ -1,3 +1,4 @@
+import time
 import base64
 import binascii
 import getpass
@@ -190,6 +191,8 @@ class Server:
                     print(f"Received from {username}: {message}")
                     if message == "/read":
                         self.send_log_messages(client_socket, username)
+                    elif message == "/remove":
+                        self.remove_log_messages(client_socket, username)
                     else:
                         self.broadcast(message, username)
                         self.store_message(username, message)
@@ -222,21 +225,54 @@ class Server:
                 except Exception as e:
                     print(f"Failed to send message to {username}: {e}")
 
+    def send_message(self, client_socket, message, sender_username):
+        try:
+            encrypted_message = encrypt_rsa(message.encode('utf-8'), self.users[sender_username]['mac_key'])
+            hash_to_send = generate_digest(message, self.users[sender_username]['mac_key'], 'sha256')
+            data_to_send = encrypted_message + b' : ' + hash_to_send
+            client_socket.send(data_to_send)
+        except Exception as e:
+            print(f"Failed to send message to {sender_username}: {e}")
+
+    def remove_log_messages(self, client_socket, sender_username):
+        try:
+            conn = sqlite3.connect('MESI_LPD.db')
+            cursor = conn.cursor()  
+            cursor.execute('DELETE FROM messages WHERE sender = ?', (sender_username,))
+             # Check the number of rows affected by the DELETE operation
+            rows_deleted = cursor.rowcount
+            if rows_deleted > 0:
+                message_to_send = (f"{rows_deleted} rows deleted successfully.")
+                self.send_message(client_socket,message_to_send,sender_username)
+            else:
+                message_to_send = (f"No rows found for deletion for sender: {sender_username}.")
+                self.send_message(client_socket,message_to_send,sender_username)
+            # Commit the changes to the database
+            conn.commit()
+        except Exception as e:
+            print(f"Failed to remove log messages for {sender_username}: {e}")
+        finally:
+            # Close the database connection
+            conn.close()
+
+
+
     def send_log_messages(self, client_socket, sender_username):
         try:
             # Retrieve messages from the 'messages' table
             # Create a new SQLite connection and cursor
             conn = sqlite3.connect('MESI_LPD.db')
             cursor = conn.cursor()
-            cursor.execute('SELECT message, timestamp FROM messages WHERE sender != ?', (sender_username,))
+            cursor.execute('SELECT message, timestamp FROM messages WHERE sender = ?', (sender_username,))
             messages = cursor.fetchall()
             for encrypted_message, timestamp in messages:
-                data = f"[{timestamp}] {sender_username}: {encrypted_message}\n"
+                data = f"{encrypted_message}\n"
                 hash_to_send = generate_digest(data.encode('utf-8'), self.users[sender_username]['mac_key'], 'sha256')
                 print("Hash created")
                 data_to_send = data.encode('utf-8') + b' : ' + hash_to_send
                 print("Message created")
                 client_socket.send(data_to_send)
+                time.sleep(0.1)
         except Exception as e:
             print(f"Failed to send log messages to {sender_username}: {e}")
 
