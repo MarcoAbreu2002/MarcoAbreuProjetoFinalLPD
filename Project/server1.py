@@ -62,7 +62,7 @@ class Server:
             print(self.public_key.export_key())
             password = input("Digite uma senha para encriptar a chave privada: ")
             encrypted_private_key = encrypt_private_key(self.private_key, password)
-            # Save the encrypted private key to a file
+            #save the encrypted private key to a file
             with open("server_private_key_encrypted.bin", "wb") as f:
                 f.write(encrypted_private_key)
 
@@ -110,12 +110,13 @@ class Server:
     def store_message(self, sender, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
+            encrypted_message = encrypt_rsa(message.encode('utf-8'), self.users[sender]['public_key'])
             # Create a new SQLite connection and cursor
             conn = sqlite3.connect('MESI_LPD.db')
             cursor = conn.cursor()
             # Insert message into the 'messages' table
             cursor.execute('INSERT INTO messages (sender, message, timestamp) VALUES (?, ?, ?)',
-                           (sender, message, timestamp))
+                           (sender, encrypted_message, timestamp))
             # Commit the changes
             conn.commit()
         except Exception as e:
@@ -191,7 +192,7 @@ class Server:
                         self.send_log_messages(client_socket, username)
                     else:
                         self.broadcast(message, username)
-                        self.store_message(username, decrypted_message)
+                        self.store_message(username, message)
                 else:
                     print(f"Integrity verification failed for the received message.")
         except Exception as e:
@@ -224,15 +225,18 @@ class Server:
     def send_log_messages(self, client_socket, sender_username):
         try:
             # Retrieve messages from the 'messages' table
-            cursor.execute('SELECT message, timestamp FROM messages WHERE sender = ?', (sender_username,))
+            # Create a new SQLite connection and cursor
+            conn = sqlite3.connect('MESI_LPD.db')
+            cursor = conn.cursor()
+            cursor.execute('SELECT message, timestamp FROM messages WHERE sender != ?', (sender_username,))
             messages = cursor.fetchall()
-
             for encrypted_message, timestamp in messages:
-                # Decrypt and send messages to the client
-                decrypted_message = decrypt_rsa(encrypted_message, self.private_key)
-                message = decrypted_message.decode('utf-8')
-                data_to_send = f"[{timestamp}] {sender_username}: {message}\n"
-                client_socket.sendall(data_to_send.encode('utf-8'))
+                data = f"[{timestamp}] {sender_username}: {encrypted_message}\n"
+                hash_to_send = generate_digest(data.encode('utf-8'), self.users[sender_username]['mac_key'], 'sha256')
+                print("Hash created")
+                data_to_send = data.encode('utf-8') + b' : ' + hash_to_send
+                print("Message created")
+                client_socket.send(data_to_send)
         except Exception as e:
             print(f"Failed to send log messages to {sender_username}: {e}")
 
