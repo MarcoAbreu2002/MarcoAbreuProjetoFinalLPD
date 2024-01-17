@@ -127,11 +127,19 @@ class Server:
             cursor.close()
             conn.close()
 
+    def encrypt_file(self, plaintext, public_key, username):
+        try:
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            built_message = f"{timestamp} {plaintext} : {username}"
+            ciphertext = encrypt_rsa(built_message.encode('utf-8'), public_key)
 
-    def encrypt_file(self, plaintext, public_key):
-        ciphertext = encrypt_rsa(plaintext, public_key)
-        with open('log_messages_encrypted.txt', 'wb') as file:
-            file.write(ciphertext)
+            with open('log_messages_encrypted.txt', 'ab') as file:
+                file.write(ciphertext + b'\n')
+
+        except Exception as e:
+            print(f"Failed to write in the log file: {e}")
+        finally:
+            file.close()
 
     def send_mac_key_encrypted(self, client_socket, client_public_key):
         try:
@@ -189,10 +197,17 @@ class Server:
                     message = decrypted_message.decode('utf-8')
 
                     print(f"Received from {username}: {message}")
+                    self.encrypt_file(message,self.public_key,username)
                     if message == "/read":
                         self.send_log_messages(client_socket, username)
                     elif message == "/remove":
                         self.remove_log_messages(client_socket, username)
+                    elif message == "/read_log_messages":
+                        if username == "Admin":
+                            self.export_log_file(client_socket, username)
+                        else:
+                            message_to_send = "You don't have permission to access that file!\n"
+                            self.send_message(client_socket, message_to_send, username)
                     else:
                         self.broadcast(message, username)
                         self.store_message(username, message)
@@ -227,8 +242,8 @@ class Server:
 
     def send_message(self, client_socket, message, sender_username):
         try:
-            encrypted_message = encrypt_rsa(message.encode('utf-8'), self.users[sender_username]['mac_key'])
-            hash_to_send = generate_digest(message, self.users[sender_username]['mac_key'], 'sha256')
+            encrypted_message = encrypt_rsa(message.encode('utf-8'), self.users[sender_username]['public_key'])
+            hash_to_send = generate_digest(encrypted_message, self.users[sender_username]['mac_key'], 'sha256')
             data_to_send = encrypted_message + b' : ' + hash_to_send
             client_socket.send(data_to_send)
         except Exception as e:
