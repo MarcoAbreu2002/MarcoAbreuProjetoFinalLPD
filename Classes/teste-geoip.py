@@ -2,7 +2,7 @@ import geoip2.database
 
 reader = geoip2.database.Reader('./GeoLite2-City.mmdb')
 
-ipReceived = Input("Insert IP: ")
+ipReceived = input("Insert IP: ")
 
 returndata = reader.city(ipReceived)
 

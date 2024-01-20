@@ -44,7 +44,7 @@ class Server:
         self.users = {}
         self.private_key = None
         self.public_key = None
-
+        self.symmetric_key = None
         # Your existing code with modifications
         if os.path.exists("server_private_key_encrypted.bin"):
             with open("server_private_key_encrypted.bin", "rb") as f:
@@ -104,10 +104,14 @@ class Server:
         self.users[username] = {
             'socket': client_socket,
             'public_key': client_public_key,
-            'mac_key': mac_key
+            'mac_key': mac_key,
+            'symmetric_key'
         }
         print(f"Generated MAC key for {username}: {mac_key.hex()}")
 
+
+
+#Storing using asymmetric key
     def store_message(self, sender, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
