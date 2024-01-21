@@ -44,10 +44,9 @@ class Server:
         self.users = {}
         self.private_key = None
         self.public_key = None
-        self.symmetric_key = None
         # Your existing code with modifications
-        if os.path.exists("server_private_key_encrypted.bin"):
-            with open("server_private_key_encrypted.bin", "rb") as f:
+        if os.path.exists("server_private_key_encrypted.pem"):
+            with open("server_private_key_encrypted.pem", "rb") as f:
                 encrypted_private_key = f.read()
             password = input("Digite a senha para desencriptar a chave privada: ")
             self.private_key = decrypt_private_key(encrypted_private_key, password)
@@ -64,7 +63,7 @@ class Server:
             password = input("Digite uma senha para encriptar a chave privada: ")
             encrypted_private_key = encrypt_private_key(self.private_key, password)
             #save the encrypted private key to a file
-            with open("server_private_key_encrypted.bin", "wb") as f:
+            with open("server_private_key_encrypted.pem", "wb") as f:
                 f.write(encrypted_private_key)
 
         self.mac_key = None
@@ -105,7 +104,6 @@ class Server:
             'socket': client_socket,
             'public_key': client_public_key,
             'mac_key': mac_key,
-            'symmetric_key'
         }
         print(f"Generated MAC key for {username}: {mac_key.hex()}")
 
@@ -115,21 +113,16 @@ class Server:
     def store_message(self, sender, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
-            encrypted_message = encrypt_rsa(message.encode('utf-8'), self.users[sender]['public_key'])
-            # Create a new SQLite connection and cursor
-            conn = sqlite3.connect('MESI_LPD.db')
-            cursor = conn.cursor()
-            # Insert message into the 'messages' table
-            cursor.execute('INSERT INTO messages (sender, message, timestamp) VALUES (?, ?, ?)',
-                           (sender, encrypted_message, timestamp))
-            # Commit the changes
-            conn.commit()
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            built_message = f"{timestamp} {message} : {sender}"
+            encrypted_message = encrypt_rsa(built_message.encode('utf-8'), self.users[sender]['public_key']) 
+            with open(f"{sender}_log_messages_encrypted.txt", 'ab') as file:
+                file.write(encrypted_message + b'\n')
         except Exception as e:
-            print(f"Error storing message in the database: {e}")
+            print(f"Error storing message in the file: {e}")
         finally:
-            # Close the cursor and connection
-            cursor.close()
-            conn.close()
+            # Close the file
+            file.close()
 
     def encrypt_file(self, plaintext, public_key, username):
         try:
@@ -255,45 +248,56 @@ class Server:
 
     def remove_log_messages(self, client_socket, sender_username):
         try:
-            conn = sqlite3.connect('MESI_LPD.db')
-            cursor = conn.cursor()  
-            cursor.execute('DELETE FROM messages WHERE sender = ?', (sender_username,))
-             # Check the number of rows affected by the DELETE operation
-            rows_deleted = cursor.rowcount
-            if rows_deleted > 0:
-                message_to_send = (f"{rows_deleted} rows deleted successfully.")
-                self.send_message(client_socket,message_to_send,sender_username)
+            # Construct the file path based on the sender's username
+            file_name = f"{sender_username}_log_messages_encrypted.txt"
+            file_path = os.path.join(os.path.dirname(__file__), file_name)
+            # Check if the file exists before attempting to remove it
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                # Invoke the send_message function with a success message
+                success_message = f"Log messages file for {sender_username} removed successfully."
+                self.send_message(client_socket, success_message,sender_username)
+                # Print the success message to the console
+                print(success_message)
             else:
-                message_to_send = (f"No rows found for deletion for sender: {sender_username}.")
-                self.send_message(client_socket,message_to_send,sender_username)
-            # Commit the changes to the database
-            conn.commit()
+                # If the file is not found, send an appropriate message
+                not_found_message = f"Log messages file for {sender_username} not found."
+                self.send_message(client_socket, not_found_message,sender_username)
+                # Print the not found message to the console
+                print(not_found_message)
         except Exception as e:
-            print(f"Failed to remove log messages for {sender_username}: {e}")
-        finally:
-            # Close the database connection
-            conn.close()
-
-
+            # If an error occurs, send an error message
+            error_message = f"Failed to remove log messages for {sender_username}: {e}"
+            self.send_message(client_socket, error_message,sender_username)
 
     def send_log_messages(self, client_socket, sender_username):
         try:
-            # Retrieve messages from the 'messages' table
-            # Create a new SQLite connection and cursor
-            conn = sqlite3.connect('MESI_LPD.db')
-            cursor = conn.cursor()
-            cursor.execute('SELECT message, timestamp FROM messages WHERE sender = ?', (sender_username,))
-            messages = cursor.fetchall()
-            for encrypted_message, timestamp in messages:
-                data = f"{encrypted_message}\n"
-                hash_to_send = generate_digest(data.encode('utf-8'), self.users[sender_username]['mac_key'], 'sha256')
-                print("Hash created")
-                data_to_send = data.encode('utf-8') + b' : ' + hash_to_send
-                print("Message created")
-                client_socket.send(data_to_send)
-                time.sleep(0.1)
+            # Construct the file path based on the sender's username
+            file_name = f"{sender_username}_log_messages_encrypted.txt"
+            file_path = os.path.join(os.path.dirname(__file__), file_name)
+            # Check if the file exists before attempting to send it
+            if os.path.exists(file_path):
+                with open(file_path, 'rb') as file:
+                    data = file.read()
+                # Concatenate data and hash for sending
+                chunk_size = 256
+                for i in range(0, len(data), chunk_size):
+                    chunk = data[i:i + chunk_size]
+                    # Generate a hash for data integrity verification
+                    hash_to_send = generate_digest(chunk, self.users[sender_username]['mac_key'], 'sha256')
+                    # Concatenate data and hash for sending
+                    data_to_send = chunk + b' : ' + hash_to_send
+                    # Send data in chunks of 256 characters
+                    client_socket.send(data_to_send)
+                    # Optionally, add a short delay to ensure the client is ready to receive the next chunk
+                    time.sleep(0.2)
+                    print(f"chunk {str(i)} sent")
+                print(f"Log messages sent to {sender_username} successfully.")
+                file.close()
+            else:
+                self.send_message(client_socket, f"Log messages file for {sender_username} not found.", sender_username)
         except Exception as e:
-            print(f"Failed to send log messages to {sender_username}: {e}")
+            self.send_message(client_socket, f"Failed to send log messages to {sender_username}: {e}", sender_username)
 
     def start(self):
         print(f"Listening to {self.host}:{self.port}")

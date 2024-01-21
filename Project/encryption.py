@@ -20,23 +20,34 @@ def generate_key_pair():
     return key, key.publickey()
 
 def encrypt_rsa(message, public_key):
-    print("Encrypting...")
     cipher_rsa = PKCS1_OAEP.new(public_key)
     return cipher_rsa.encrypt(message)
 
 def decrypt_rsa(data, private_key):
     cipher_rsa = PKCS1_OAEP.new(private_key)
-    decrypted_data = cipher_rsa.decrypt(data)
-    return decrypted_data
+    return cipher_rsa.decrypt(data)
 
-def decrypt_rsa_in_chunks(ciphertext, private_key, chunk_size=128):
-    # Create a cipher object
-    cipher = PKCS1_OAEP.new(private_key)
-    # Initialize an empty string to store the decrypted message
-    decrypted_message = b''
-    # Iterate over chunks of ciphertext and decrypt each chunk
-    for i in range(0, len(ciphertext), chunk_size):
-        chunk = ciphertext[i:i + chunk_size]
-        decrypted_chunk = cipher.decrypt(chunk)
-        decrypted_message += decrypted_chunk
-    return decrypted_message
+def decrypt_rsa_in_chunks(ciphertext, private_key, chunk_size=256):
+    try:
+        # Create a cipher object with the provided private key
+        cipher = PKCS1_OAEP.new(private_key)
+
+        # Initialize an empty byte array to store the decrypted message
+        decrypted_message = b''
+        print("size: " + str(len(ciphertext)))
+        # Iterate over chunks of ciphertext and decrypt each chunk
+        for i in range(0, len(ciphertext), chunk_size):
+            print("i: " + str(i))
+            chunk = ciphertext[i:min(i + chunk_size, len(ciphertext))]
+            print("chunk: ")
+            # Decrypt the chunk and append to the decrypted message
+            decrypted_chunk = cipher.decrypt(chunk)
+            print("decrypt: " + decrypted_chunk.decode('utf-8'))
+            decrypted_message += decrypted_chunk
+
+        return decrypted_message
+
+    except Exception as e:
+        # Handle cryptographic exceptions
+        print(f"Error during RSA decryption: {e}")
+        return None

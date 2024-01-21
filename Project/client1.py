@@ -1,3 +1,5 @@
+import time
+import sys
 import socket
 import threading
 from Crypto.PublicKey import RSA
@@ -29,7 +31,6 @@ class Client:
         self.server_public_key = None
         self.mac_key = None
         self.username = None
-
     def create_new_user(self):
         self.username = input("Enter your Name: ")
         passphrase = input("Enter a password for the new user: ")
@@ -59,7 +60,8 @@ class Client:
     def send_message(self):
         try:
             while True:
-                message = input("Enter your message: ")
+               # message = input()
+                message = input("Enter your message: ") 
                 encrypted_message = encrypt_rsa(message.encode('utf-8'), self.server_public_key)
                 # Generate digest for the message
                 digest_to_send = generate_digest(encrypted_message, self.mac_key, 'sha256')
@@ -85,11 +87,17 @@ class Client:
 
         except Exception as e:
             print(f"Error during key exchange: {e}")
+    
+    def remove_last_line(self):
+        # Move the cursor up one line
+        sys.stdout.write('\033[F')
+        # Erase the line
+        sys.stdout.write('\033[K')
 
     def receive_messages(self):
         try:
             while True:
-                data = self.client_socket.recv(2048)
+                data = self.client_socket.recv(5012)
                 if not data:
                     break
                 # Separate message and digest
@@ -98,17 +106,12 @@ class Client:
                 # Verify the integrity of the received message
                 is_integrity_verified = verify_digest(received_digest, generated_digest)
                 if is_integrity_verified:
-                    print("Integrity verified")
-                    # Choose decryption method based on the size of the received message
-                    if len(message) <= 1500:
-                        # Use normal decryption for small messages
-                        decrypted_message = decrypt_rsa(message, self.client_private_key)
-                    else:
-                        # Use chunked decryption for larger messages
-                        decrypted_message = decrypt_rsa_in_chunks(message, self.client_private_key)
+                    decrypted_message = decrypt_rsa(message, self.client_private_key)
                     # Convert the decrypted message to utf-8
                     message = decrypted_message.decode('utf-8')
-                    print(message)
+                    #print(message)
+                    print(f"\r{message}\t\t\n", end=' ',flush=True)
+                    time.sleep(0.2)
         except Exception as e:
             print(f"Error receiving message: {e}")
 
@@ -120,9 +123,11 @@ class Client:
             existing_user = input("Do you want to use an existing user? (yes/no): ").lower()
             if existing_user == 'yes':
                 self.load_existing_user()
-            else:
+            elif existing_user == 'no':
                 self.create_new_user()
-
+            else:
+                print("Invalid option! Leaving...")
+                return
             self.client_socket.send(self.username.encode('utf-8'))
             # Receive the server's public key and send the client's public key
             self.receive_public_key_and_mac_key()
