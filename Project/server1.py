@@ -114,10 +114,10 @@ class Server:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            built_message = f"{timestamp} {message} : {sender}"
+            built_message = f"{timestamp} {sender} : {message} \n"
             encrypted_message = encrypt_rsa(built_message.encode('utf-8'), self.users[sender]['public_key']) 
-            with open(f"{sender}_log_messages_encrypted.txt", 'ab') as file:
-                file.write(encrypted_message + b'\n')
+            with open(f"client_messages/{sender}_log_messages_encrypted.txt", 'ab') as file:
+                file.write(encrypted_message)
         except Exception as e:
             print(f"Error storing message in the file: {e}")
         finally:
@@ -249,7 +249,7 @@ class Server:
     def remove_log_messages(self, client_socket, sender_username):
         try:
             # Construct the file path based on the sender's username
-            file_name = f"{sender_username}_log_messages_encrypted.txt"
+            file_name = f"client_messages/{sender_username}_log_messages_encrypted.txt"
             file_path = os.path.join(os.path.dirname(__file__), file_name)
             # Check if the file exists before attempting to remove it
             if os.path.exists(file_path):
@@ -273,31 +273,22 @@ class Server:
     def send_log_messages(self, client_socket, sender_username):
         try:
             # Construct the file path based on the sender's username
-            file_name = f"{sender_username}_log_messages_encrypted.txt"
+            file_name = f"client_messages/{sender_username}_log_messages_encrypted.txt"
             file_path = os.path.join(os.path.dirname(__file__), file_name)
+
             # Check if the file exists before attempting to send it
             if os.path.exists(file_path):
                 with open(file_path, 'rb') as file:
-                    data = file.read()
-                # Concatenate data and hash for sending
-                chunk_size = 256
-                for i in range(0, len(data), chunk_size):
-                    chunk = data[i:i + chunk_size]
-                    # Generate a hash for data integrity verification
-                    hash_to_send = generate_digest(chunk, self.users[sender_username]['mac_key'], 'sha256')
-                    # Concatenate data and hash for sending
-                    data_to_send = chunk + b' : ' + hash_to_send
-                    # Send data in chunks of 256 characters
-                    client_socket.send(data_to_send)
-                    # Optionally, add a short delay to ensure the client is ready to receive the next chunk
-                    time.sleep(0.2)
-                    print(f"chunk {str(i)} sent")
+                    file_data = file.read()
+                hash_to_send = generate_digest(file_data, self.users[sender_username]['mac_key'], 'sha256')
+                data_to_send = file_data + b' : ' + hash_to_send
+                client_socket.send(data_to_send)
                 print(f"Log messages sent to {sender_username} successfully.")
-                file.close()
             else:
                 self.send_message(client_socket, f"Log messages file for {sender_username} not found.", sender_username)
         except Exception as e:
             self.send_message(client_socket, f"Failed to send log messages to {sender_username}: {e}", sender_username)
+
 
     def start(self):
         print(f"Listening to {self.host}:{self.port}")

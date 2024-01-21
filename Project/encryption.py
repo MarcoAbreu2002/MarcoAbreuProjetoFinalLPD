@@ -27,27 +27,28 @@ def decrypt_rsa(data, private_key):
     cipher_rsa = PKCS1_OAEP.new(private_key)
     return cipher_rsa.decrypt(data)
 
+
 def decrypt_rsa_in_chunks(ciphertext, private_key, chunk_size=256):
     try:
         # Create a cipher object with the provided private key
         cipher = PKCS1_OAEP.new(private_key)
-
+        # Ensure that ciphertext is a byte array
+        if not isinstance(ciphertext, bytes):
+            raise ValueError("Ciphertext must be a byte array")
+        # Ensure that private_key is an RSA private key object
+        if not isinstance(private_key, RSA.RsaKey):
+            raise ValueError("Private key must be an RSA private key object")
         # Initialize an empty byte array to store the decrypted message
-        decrypted_message = b''
-        print("size: " + str(len(ciphertext)))
+        decrypted_message = b""
         # Iterate over chunks of ciphertext and decrypt each chunk
         for i in range(0, len(ciphertext), chunk_size):
-            print("i: " + str(i))
             chunk = ciphertext[i:min(i + chunk_size, len(ciphertext))]
-            print("chunk: ")
-            # Decrypt the chunk and append to the decrypted message
+            # Skip the last chunk if its length is less than chunk_size
+            if len(chunk) < chunk_size:
+                continue
             decrypted_chunk = cipher.decrypt(chunk)
-            print("decrypt: " + decrypted_chunk.decode('utf-8'))
             decrypted_message += decrypted_chunk
-
         return decrypted_message
-
     except Exception as e:
-        # Handle cryptographic exceptions
-        print(f"Error during RSA decryption: {e}")
+        print(f"Error: {str(e)}")
         return None

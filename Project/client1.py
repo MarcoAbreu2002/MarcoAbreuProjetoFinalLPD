@@ -38,7 +38,7 @@ class Client:
 
         # Encrypt and save the private key to a file
         encrypted_private_key = encrypt_private_key(self.client_private_key, passphrase)
-        with open(f"{self.username}.pem", "wb") as key_file:
+        with open(f"client_key/{self.username}.pem", "wb") as key_file:
             key_file.write(encrypted_private_key)
         print(f"Private key for user {self.username} saved to {self.username}.pem")
 
@@ -46,7 +46,7 @@ class Client:
         self.username = input("Enter your Name: ")
         passphrase = input("Enter the password for the existing user: ")
         try:
-            with open(f"{self.username}.pem", "rb") as key_file:
+            with open(f"client_key/{self.username}.pem", "rb") as key_file:
                 encrypted_private_key = key_file.read()
                 self.client_private_key = decrypt_private_key(encrypted_private_key, passphrase)
                 self.client_public_key = self.client_private_key.public_key()
@@ -60,8 +60,7 @@ class Client:
     def send_message(self):
         try:
             while True:
-               # message = input()
-                message = input("Enter your message: ") 
+                message = input("Enter your message: ")
                 encrypted_message = encrypt_rsa(message.encode('utf-8'), self.server_public_key)
                 # Generate digest for the message
                 digest_to_send = generate_digest(encrypted_message, self.mac_key, 'sha256')
@@ -70,6 +69,7 @@ class Client:
                 self.client_socket.send(data_to_send)
         except Exception as e:
             print(f"Error sending message: {e}")
+
 
     def receive_public_key_and_mac_key(self):
         try:
@@ -87,7 +87,7 @@ class Client:
 
         except Exception as e:
             print(f"Error during key exchange: {e}")
-    
+
     def remove_last_line(self):
         # Move the cursor up one line
         sys.stdout.write('\033[F')
@@ -97,21 +97,24 @@ class Client:
     def receive_messages(self):
         try:
             while True:
-                data = self.client_socket.recv(5012)
+                data = self.client_socket.recv(2048)
                 if not data:
                     break
                 # Separate message and digest
-                message, received_digest = data.split(b' : ')
-                generated_digest = generate_digest(message, self.mac_key, 'sha256')
+                message_received, received_digest = data.split(b' : ')
+                generated_digest = generate_digest(message_received, self.mac_key, 'sha256')
                 # Verify the integrity of the received message
                 is_integrity_verified = verify_digest(received_digest, generated_digest)
                 if is_integrity_verified:
-                    decrypted_message = decrypt_rsa(message, self.client_private_key)
+                    print("Integrity Verified!")
+                    if len(message_received) < 150:
+                        decrypted_message = decrypt_rsa(message_received, self.client_private_key)
+                    else:
+                        decrypted_message = decrypt_rsa_in_chunks(message_received, self.client_private_key)
                     # Convert the decrypted message to utf-8
-                    message = decrypted_message.decode('utf-8')
+                    message_to_display = decrypted_message.decode('utf-8')
                     #print(message)
-                    print(f"\r{message}\t\t\n", end=' ',flush=True)
-                    time.sleep(0.2)
+                    print(f"\r{message_to_display}\t\t\n", end=' ',flush=True)
         except Exception as e:
             print(f"Error receiving message: {e}")
 
@@ -148,3 +151,4 @@ class Client:
 # Example usage
 client = Client('127.0.0.1', 5555)
 client.start()
+
