@@ -1,9 +1,19 @@
 import sys
 import subprocess
+import os
 
 def main():
+    clear_screen()
     while True:
         menu()
+
+def clear_screen():
+    # Clear screen based on the operating system
+    if sys.platform.startswith('win'):
+        os.system('cls')  # For Windows
+    else:
+        os.system('clear')  # For Linux and macOS
+
 
 def menu():
     print("************Aplicação de Segurança Informática**************")
@@ -43,26 +53,29 @@ def menu():
         print("\nUser interrupted. Returning to the menu.")
 
 def encrypted_chat_menu():
-    print("""
+    while True:
+        print("""
                1: Start Server
                2: Start Client
                Q: Back to main menu
-    """)
+        """)
 
-    choice = input("Escolha a opção desejada: ")
+        choice = input("Escolha a opção desejada: ")
 
-    try:
-        match choice.upper():
-            case "1":
-                start_server()
-            case "2":
-                start_client()
-            case "Q":
-                print("Returning to the main menu.")
-            case _:
-                print("ERROR: Invalid choice.")
-    except KeyboardInterrupt:
-        print("\nUser interrupted. Returning to the menu.")
+        try:
+            match choice.upper():
+                case "1":
+                    start_server()
+                case "2":
+                    start_client()
+                case "Q":
+                    print("Returning to the main menu.")
+                    clear_screen()
+                    return  # Exit the loop and return to the main menu
+                case _:
+                    print("ERROR: Invalid choice.")
+        except KeyboardInterrupt:
+            print("\nUser interrupted. Returning to the menu.")
 
 def start_server():
     # Check if the server is already running
@@ -72,7 +85,7 @@ def start_server():
     else:
         print("Starting the server...")
         # Use -- to terminate options and execute the command
-        subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', 'python3 server1.py; exec bash'])
+        subprocess.Popen(['gnome-terminal', '--',  'python',  'server1.py'])
 
 def start_client():
     print("Starting the client...")

@@ -1,3 +1,4 @@
+import os
 import time
 import sys
 import socket
@@ -31,6 +32,8 @@ class Client:
         self.server_public_key = None
         self.mac_key = None
         self.username = None
+        self.action = None
+
     def create_new_user(self):
         self.username = input("Enter your Name: ")
         passphrase = input("Enter a password for the new user: ")
@@ -61,6 +64,10 @@ class Client:
         try:
             while True:
                 message = input("Enter your message: ")
+                if message == '/download':
+                    self.action = '/download'
+                else:
+                     self.action = None
                 encrypted_message = encrypt_rsa(message.encode('utf-8'), self.server_public_key)
                 # Generate digest for the message
                 digest_to_send = generate_digest(encrypted_message, self.mac_key, 'sha256')
@@ -113,10 +120,29 @@ class Client:
                         decrypted_message = decrypt_rsa_in_chunks(message_received, self.client_private_key)
                     # Convert the decrypted message to utf-8
                     message_to_display = decrypted_message.decode('utf-8')
-                    #print(message)
-                    print(f"\r{message_to_display}\t\t\n", end=' ',flush=True)
+                    if self.action == "/download":
+                        self.download_messages(message_to_display,self.username)
+                        print("DownloadComplete!\n")
+                    else:
+                        print(f"\r{message_to_display}\t\t\n", end=' ',flush=True)
         except Exception as e:
             print(f"Error receiving message: {e}")
+
+    def download_messages(self,messages_to_display, username):
+        # Generate the base filename based on the username
+        base_filename = f"{username}_downloaded_messages.txt"
+        # Check if the base filename already exists
+        counter = 0
+        while True:
+            filename = base_filename if counter == 0 else f"{base_filename[:-4]}({counter}).txt" 
+            if not os.path.exists(filename):
+                break  # Exit the loop if the filename is available
+            counter += 1
+        # Open the file in write mode
+        with open(filename, 'w') as file:
+            # Write each message to the file
+            for message in messages_to_display:
+                file.write(message)
 
     def start(self):
         try:

@@ -97,7 +97,7 @@ try:
 
         # Move the join inside the loop for real-time results
         port_thread.join()
-        print(f"Thread {port_thread.ident} finished")
+       # print(f"Thread {port_thread.ident} finished")
 
 except KeyboardInterrupt:
    print("\nUser interrupted. Stopping the port scan.")

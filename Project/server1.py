@@ -58,8 +58,6 @@ class Server:
                 return
         else:
             self.private_key, self.public_key = generate_key_pair()
-            print(self.private_key.export_key())
-            print(self.public_key.export_key())
             password = input("Digite uma senha para encriptar a chave privada: ")
             encrypted_private_key = encrypt_private_key(self.private_key, password)
             #save the encrypted private key to a file
@@ -127,11 +125,11 @@ class Server:
     def encrypt_file(self, plaintext, public_key, username):
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            built_message = f"{timestamp} {plaintext} : {username}"
+            built_message = f"{timestamp} {username}: {plaintext} \n"
             ciphertext = encrypt_rsa(built_message.encode('utf-8'), public_key)
 
             with open('log_messages_encrypted.txt', 'ab') as file:
-                file.write(ciphertext + b'\n')
+                file.write(ciphertext )
 
         except Exception as e:
             print(f"Failed to write in the log file: {e}")
@@ -195,7 +193,7 @@ class Server:
 
                     print(f"Received from {username}: {message}")
                     self.encrypt_file(message,self.public_key,username)
-                    if message == "/read":
+                    if message == "/read" or message == "/download":
                         self.send_log_messages(client_socket, username)
                     elif message == "/remove":
                         self.remove_log_messages(client_socket, username)
