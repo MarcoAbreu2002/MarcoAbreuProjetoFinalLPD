@@ -1,0 +1,46 @@
+"timestamp","source","message","dst_ip_geo_city_name","dst_ip_geo_country_code","dst_ip_geo_country_name","dst_ip_geolocation"
+"2024-01-20T13:30:19.014Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:30:19.015Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:31:14.849Z","kali","[session uid=1000 pid=1467] Activating service name='org.xfce.Xfconf' requested by ':1.24' (uid=1000 pid=1669 comm=""xfce4-panel --display :0.0 --sm-client-id 2b7c02e9"")",,,,
+"2024-01-20T13:31:14.882Z","kali","[session uid=1000 pid=1467] Successfully activated service 'org.xfce.Xfconf'",,,,
+"2024-01-20T13:31:19.323Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:31:19.340Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:32:19.460Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:32:19.462Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:33:10.872Z","kali","Mock log message with IP: 84.251.159.33","Mikkeli","FI","Finland","61.6512,27.2496"
+"2024-01-20T13:33:11.877Z","kali","Mock log message with IP: 161.35.158.32","Amsterdam","NL","The Netherlands","52.352,4.9392"
+"2024-01-20T13:33:12.878Z","kali","Mock log message with IP: 127.228.138.92",,,,
+"2024-01-20T13:33:13.879Z","kali","Mock log message with IP: 114.39.186.55","Yongkang District","TW","Taiwan","23.0204,120.2591"
+"2024-01-20T13:33:14.881Z","kali","Mock log message with IP: 173.135.19.82","Tacoma","US","United States","47.2565,-122.4421"
+"2024-01-20T13:33:15.885Z","kali","Mock log message with IP: 191.21.221.42","Fortaleza","BR","Brazil","-3.7138,-38.5285"
+"2024-01-20T13:33:16.888Z","kali","Mock log message with IP: 178.23.26.231",,"DE","Germany","51.2993,9.491"
+"2024-01-20T13:33:17.889Z","kali","Mock log message with IP: 97.251.182.40",,"US","United States","37.751,-97.822"
+"2024-01-20T13:33:18.894Z","kali","Mock log message with IP: 158.175.171.130",,"US","United States","37.751,-97.822"
+"2024-01-20T13:33:19.461Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:33:19.463Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:33:19.897Z","kali","Mock log message with IP: 11.113.64.233",,"US","United States","37.751,-97.822"
+"2024-01-20T13:33:20.899Z","kali","Mock log message with IP: 255.224.30.176",,,,
+"2024-01-20T13:33:21.902Z","kali","Mock log message with IP: 230.127.112.170",,,,
+"2024-01-20T13:33:22.905Z","kali","Mock log message with IP: 247.33.92.243",,,,
+"2024-01-20T13:33:23.909Z","kali","Mock log message with IP: 190.11.243.214","Quito","EC","Ecuador","-0.2309,-78.5211"
+"2024-01-20T13:33:24.912Z","kali","Mock log message with IP: 90.91.98.76","Argenteuil","FR","France","48.9484,2.2513"
+"2024-01-20T13:33:25.916Z","kali","Mock log message with IP: 251.12.205.108",,,,
+"2024-01-20T13:33:26.917Z","kali","Mock log message with IP: 170.105.249.151",,"JP","Japan","35.6897,139.6895"
+"2024-01-20T13:33:27.920Z","kali","Mock log message with IP: 128.76.200.7","Nakskov","DK","Denmark","54.834,11.1247"
+"2024-01-20T13:33:28.925Z","kali","Mock log message with IP: 140.101.113.207","Schaumburg","US","United States","42.0563,-88.0703"
+"2024-01-20T13:33:29.928Z","kali","Mock log message with IP: 18.228.98.182","São Paulo","BR","Brazil","-23.5335,-46.6359"
+"2024-01-20T13:33:30.929Z","kali","Mock log message with IP: 122.115.115.239",,"CN","China","34.7732,113.722"
+"2024-01-20T13:33:31.932Z","kali","Mock log message with IP: 6.13.29.15",,"US","United States","37.751,-97.822"
+"2024-01-20T13:33:32.933Z","kali","Mock log message with IP: 70.206.54.22",,"US","United States","37.751,-97.822"
+"2024-01-20T13:33:33.935Z","kali","Mock log message with IP: 22.36.55.143",,"US","United States","37.751,-97.822"
+"2024-01-20T13:33:34.939Z","kali","Mock log message with IP: 202.145.170.172",,"TW","Taiwan","24.0,121.0"
+"2024-01-20T13:33:35.939Z","kali","Mock log message with IP: 12.210.139.124","Little Rock","US","United States","34.7448,-92.2883"
+"2024-01-20T13:33:36.941Z","kali","Mock log message with IP: 168.63.247.124","Singapore","SG","Singapore","1.2868,103.8503"
+"2024-01-20T13:33:37.943Z","kali","Mock log message with IP: 198.62.159.111","Ottawa","CA","Canada","45.4259,-75.7058"
+"2024-01-20T13:33:38.945Z","kali","Mock log message with IP: 200.209.189.157","Rio de Janeiro","BR","Brazil","-22.9201,-43.0811"
+"2024-01-20T13:33:39.945Z","kali","Mock log message with IP: 196.253.94.180","Vanderbijlpark","ZA","South Africa","-26.7005,27.8179"
+"2024-01-20T13:34:19.672Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:34:19.673Z","kali","Supervising 0 threads of 0 processes of 0 users.",,,,
+"2024-01-20T13:35:01.710Z","kali","pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)",,,,
+"2024-01-20T13:35:01.720Z","kali","(root) CMD (command -v debian-sa1 > /dev/null && debian-sa1 1 1)",,,,
+"2024-01-20T13:35:01.743Z","kali","pam_unix(cron:session): session closed for user root",,,,
