@@ -57,6 +57,7 @@ def encrypted_chat_menu():
         print("""
                1: Start Server
                2: Start Client
+               3: Read Log Messages
                Q: Back to main menu
         """)
 
@@ -68,6 +69,8 @@ def encrypted_chat_menu():
                     start_server()
                 case "2":
                     start_client()
+                case "3":
+                    read_log_messages()
                 case "Q":
                     print("Returning to the main menu.")
                     clear_screen()
@@ -90,6 +93,11 @@ def start_server():
 def start_client():
     print("Starting the client...")
     subprocess.Popen(['gnome-terminal', '--', 'python', 'client1.py'])
+
+def read_log_messages():
+    print("Starting Log Messages...")
+    subprocess.Popen(['gnome-terminal', '--', 'python', 'get_log_messages.py'])
+
 
 if __name__ == "__main__":
     # The program is initiated here

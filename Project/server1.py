@@ -71,30 +71,30 @@ class Server:
         return get_random_bytes(32)  # 32 bytes for a 256-bit key
 
     def setup_database(self):
+        cursor = None  # Initialize cursor outside the try block
         try:
             # Create a new SQLite connection and cursor
-            conn = sqlite3.connect('MESI_LPD.db')
-            cursor = conn.cursor()
+            with sqlite3.connect('MESI_LPD.db') as conn:
+                cursor = conn.cursor()
 
-            # Execute SQL command to create a 'messages' table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS messages (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    sender TEXT,
-                    message TEXT,
-                    timestamp DATETIME
-                )
-            ''')
+                # Execute SQL command to create a 'messages' table
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS messages (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        data BLOB 
+                    )
+                ''') 
 
-            # Commit the changes
-            conn.commit()
+                # Commit the changes
+                conn.commit()
 
         except Exception as e:
             print(f"Error setting up the database: {e}")
-
         finally:
-            # Close the cursor and connection
-            cursor.close()
+            # Close the cursor and connection (if they are not None)
+            if cursor:
+                cursor.close()
+
 
     def register_user(self, username, client_socket, client_public_key):
         mac_key = self.generate_user_mac_key()
@@ -109,7 +109,6 @@ class Server:
 
 #Storing using asymmetric key
     def store_message(self, sender, message):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             built_message = f"{timestamp} {sender} : {message} \n"
@@ -122,19 +121,33 @@ class Server:
             # Close the file
             file.close()
 
+
     def encrypt_file(self, plaintext, public_key, username):
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             built_message = f"{timestamp} {username}: {plaintext} \n"
             ciphertext = encrypt_rsa(built_message.encode('utf-8'), public_key)
 
-            with open('log_messages_encrypted.txt', 'ab') as file:
-                file.write(ciphertext )
+            # Connect to the SQLite database
+            conn = sqlite3.connect('MESI_LPD.db')
+            cursor = conn.cursor()
+
+            # Insert the ciphertext into the 'messages' table
+            cursor.execute('''
+                INSERT INTO messages (data)
+                VALUES (?)
+            ''', (ciphertext,))
+
+            # Commit the changes
+            conn.commit()
 
         except Exception as e:
-            print(f"Failed to write in the log file: {e}")
+            print(f"Failed to write in the database: {e}")
         finally:
-            file.close()
+            # Close the cursor and connection
+            cursor.close()
+            conn.close()
+
 
     def send_mac_key_encrypted(self, client_socket, client_public_key):
         try:
@@ -195,14 +208,10 @@ class Server:
                     self.encrypt_file(message,self.public_key,username)
                     if message == "/read" or message == "/download":
                         self.send_log_messages(client_socket, username)
+                        self.store_message(username,message)
                     elif message == "/remove":
                         self.remove_log_messages(client_socket, username)
-                    elif message == "/read_log_messages":
-                        if username == "Admin":
-                            self.export_log_file(client_socket, username)
-                        else:
-                            message_to_send = "You don't have permission to access that file!\n"
-                            self.send_message(client_socket, message_to_send, username)
+                        self.store_message(username,message)
                     else:
                         self.broadcast(message, username)
                         self.store_message(username, message)

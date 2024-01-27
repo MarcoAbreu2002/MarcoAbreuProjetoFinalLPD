@@ -2,9 +2,28 @@ from threading import Thread
 import socket
 from datetime import datetime
 import pickle
+from reportlab.pdfgen import canvas
+import csv
 
 pickle_file = open('port_description.dat', 'rb')
 data = skill = pickle.load(pickle_file)
+
+# Lista global para relatório PDF e lista CSV
+report_data = []
+csv_data = []
+
+def generate_pdf(report_data, file_path):
+    c = canvas.Canvas(file_path)
+    for line in report_data:
+        c.drawString(100, 100, line)
+        c.showPage()
+    c.save()
+
+def generate_csv(data, file_path):
+    with open(file_path, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        for row in data:
+            csv_writer.writerow(row)
 
 def get_port_description(port):
     try:
@@ -14,6 +33,8 @@ def get_port_description(port):
         return f"No Known service for port {port}"
 
 def scantcp(r1, r2):
+    global report_data, csv_data
+
     try:
         for port in range(r1, r2):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,14 +45,22 @@ def scantcp(r1, r2):
                 if description == 'Not in Database':
                     description = get_port_description(port)
                 print('Port Open:-->\t', port, '--', description)
+
+                # Adicione ao relatório PDF
+                report_data.append(f"Port Open: {port} - {description}")
+
+                # Adicione à lista CSV
+                csv_data.append([port, description])
+
                 sock.close()
     except Exception as e:
         print(e)
 
+#banner
 print('*' * 60)
-print(' \tWelcome, this is the Port scanner \n ')
+print(' \tPort scanner \n ')
 
-d = input('\tPress D for Domain Name or Press I for IP Address\t')
+d = input('\tD - Domain Name | I - IP Address\t')
 if d == 'D' or d == 'd':
     rmserver = input('\t Enter the Domain Name to scan:\t')
     rmip = socket.gethostbyname(rmserver)
@@ -48,7 +77,7 @@ if port_last1 > 65535:
     port_last1 = 65535
     print('Setting last port 65535')
 
-conect = input('For low connectivity press L and High connectivity PressH\t')
+conect = input('Low connectivity = L | High connectivity = H \t')
 
 if conect == 'L' or conect == 'l':
     c = 1.5
@@ -57,6 +86,7 @@ elif conect == 'H' or conect == 'h':
 else:
     print('\twrong Input')
 
+# Iniciar a varredura de portas em threads
 print("\nScanning in progress... ", rmip)
 print('*' * 60)
 
@@ -95,15 +125,18 @@ try:
         threads.append(port_thread)
         start1 = last1
 
-        # Move the join inside the loop for real-time results
-        port_thread.join()
-       # print(f"Thread {port_thread.ident} finished")
-
 except KeyboardInterrupt:
-   print("\nUser interrupted. Stopping the port scan.")
+    print("\nUser interrupted. Stopping the port scan.")
+
+# Aguarde a conclusão de todas as threads
+for thread in threads:
+    thread.join()
 
 print('Exiting Main Thread')
 t2 = datetime.now()
 total = t2 - t1
 print('Scanning complete in ', total)
 
+# Gerar relatório e lista
+generate_pdf(report_data, "relatorio.pdf")
+generate_csv(csv_data, "lista.csv")

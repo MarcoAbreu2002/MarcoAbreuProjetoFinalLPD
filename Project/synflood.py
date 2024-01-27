@@ -28,16 +28,11 @@ def send_packets_thread(target_ip, num_packets):
 
 def signal_handler(sig, frame):
     print("Main KeyboardInterrupt. Stopping threads gracefully.")
-    # Set the stop event to signal threads to stop
     stop_event.set()
-    # Wait for threads to finish
     sys.exit(0)
 
 def send_packets(target_ip, num_packets, num_threads):
-    # Register the signal handler
     signal.signal(signal.SIGINT, signal_handler)
-
-    # Create threads
     threads = []
     for _ in range(num_threads):
         thread = threading.Thread(target=send_packets_thread, args=(target_ip, num_packets))

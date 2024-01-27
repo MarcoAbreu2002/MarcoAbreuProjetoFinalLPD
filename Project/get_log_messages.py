@@ -1,3 +1,5 @@
+import signal
+import sqlite3
 import getpass
 import sys
 from Crypto.PublicKey import RSA
@@ -35,17 +37,36 @@ def decrypt_log_messages():
 
         decrypted_private_key = get_private_key_password(encrypted_private_key)
 
-        with open("log_messages_encrypted.txt", "rb") as f:
-            encrypted_messages = f.read()
+        # Connect to the SQLite database
+        with sqlite3.connect('MESI_LPD.db') as conn:
+            cursor = conn.cursor()
 
-        decrypted_messages = decrypt_rsa_in_chunks(encrypted_messages, decrypted_private_key)
-        print("Decrypted Messages:")
-        print(decrypted_messages.decode('utf-8'))
+            # Retrieve the encrypted messages from the 'messages' table
+            cursor.execute("SELECT data FROM messages")
+            encrypted_messages = cursor.fetchall()
 
+            # Decrypt and print the messages
+            for encrypted_data in encrypted_messages:
+                decrypted_messages = decrypt_rsa_in_chunks(encrypted_data[0], decrypted_private_key)
+                if decrypted_messages is not None:
+                    print(decrypted_messages.decode('utf-8'))
+
+        # Use an infinite loop to keep the program running
+        while True:
+            pass
+
+
+    except FileNotFoundError as fnfe:
+        print(f"Private key file not found: {fnfe}")
+    except sqlite3.Error as sqle:
+        print(f"SQLite error: {sqle}")
     except Exception as e:
         print(f"Error decrypting log messages: {e}")
     finally:
-        decrypted_private_key = None  # Clear the decrypted private key from memory
+        # Close the cursor and connection
+        cursor.close()
+
+
 
 if __name__ == "__main__":
     decrypt_log_messages()

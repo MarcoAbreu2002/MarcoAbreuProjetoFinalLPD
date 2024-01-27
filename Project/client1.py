@@ -33,7 +33,7 @@ class Client:
         self.mac_key = None
         self.username = None
         self.action = None
-
+        self.download_event = threading.Event()
     def create_new_user(self):
         self.username = input("Enter your Name: ")
         passphrase = input("Enter a password for the new user: ")
@@ -63,11 +63,11 @@ class Client:
     def send_message(self):
         try:
             while True:
-                message = input("Enter your message: ")
+                message = input("Message: ")
                 if message == '/download':
                     self.action = '/download'
-                else:
-                     self.action = None
+                elif message == '/exit':
+                    self.client_socket.close()
                 encrypted_message = encrypt_rsa(message.encode('utf-8'), self.server_public_key)
                 # Generate digest for the message
                 digest_to_send = generate_digest(encrypted_message, self.mac_key, 'sha256')
@@ -113,7 +113,7 @@ class Client:
                 # Verify the integrity of the received message
                 is_integrity_verified = verify_digest(received_digest, generated_digest)
                 if is_integrity_verified:
-                    print("Integrity Verified!")
+#                    print("Integrity Verified!")
                     if len(message_received) < 150:
                         decrypted_message = decrypt_rsa(message_received, self.client_private_key)
                     else:
@@ -121,12 +121,16 @@ class Client:
                     # Convert the decrypted message to utf-8
                     message_to_display = decrypted_message.decode('utf-8')
                     if self.action == "/download":
+                        print("Downloading messages...\n")
                         self.download_messages(message_to_display,self.username)
-                        print("DownloadComplete!\n")
+                        time.sleep(0.5)
+                        print("Download Complete!\n")
+                        self.action = None
                     else:
                         print(f"\r{message_to_display}\t\t\n", end=' ',flush=True)
         except Exception as e:
             print(f"Error receiving message: {e}")
+
 
     def download_messages(self,messages_to_display, username):
         # Generate the base filename based on the username
@@ -143,9 +147,16 @@ class Client:
             # Write each message to the file
             for message in messages_to_display:
                 file.write(message)
-
+        self.download_event.set()
+ 
     def start(self):
         try:
+            print("****************************************")
+            print("***        Encrypted chat            ***")
+            print("** /read - read all messages sent    ***")
+            print("** /download - Download all messages ***")
+            print("** /exit - leave                     ***")
+            print("****************************************")
             self.client_socket.connect((self.host, self.port))
             print(f"Connected to the server at {self.host}:{self.port}")
 
@@ -174,7 +185,6 @@ class Client:
         finally:
             self.client_socket.close()
 
-# Example usage
 client = Client('127.0.0.1', 5555)
 client.start()
 
