@@ -1,10 +1,2 @@
-9200,Elasticsearch—default Elasticsearch port -  Unofficial TCP
-9000,QBittorrent's embedded torrent tracker default port-  Unofficial TCP
-9300,IBM Cognos BI[citation needed] -  Unofficial TCP
-27017,MongoDB daemon process (mongod) and routing service (mongos)- No UDP Unofficial TCP
-1515,No Known service for port 1515
-12201,Graylog Extended Log Format (GELF)[importance?] -  Unofficial TCP and UDP
-35818,No Known service for port 35818
-43094,No Known service for port 43094
-55358,Certificate Management over CMS- No UDP Unofficial TCP
-58466,Certificate Management over CMS- No UDP Unofficial TCP
+7680,Delivery Optimization for Windows 10-  Unofficial TCP
+80,"Hypertext Transfer Protocol (HTTP)uses TCP in versions 1.x and 2. HTTP/3 uses QUIC,a transport protocol on top of UDP. -  TCP and UDP"

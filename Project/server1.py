@@ -111,7 +111,7 @@ class Server:
     def store_message(self, sender, message):
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            built_message = f"{timestamp} {sender} : {message} \n"
+            built_message = f"{timestamp} {sender} : {message}\n"
             encrypted_message = encrypt_rsa(built_message.encode('utf-8'), self.users[sender]['public_key']) 
             with open(f"client_messages/{sender}_log_messages_encrypted.txt", 'ab') as file:
                 file.write(encrypted_message)
@@ -186,7 +186,7 @@ class Server:
                 if not data:
                     break
 
-                received_data = data.split(b' : ')
+                received_data = data.split('ç'.encode('utf-8'))
                 encrypted_message, received_digest = received_data[0], received_data[1]
                 print("Encrypted message: " + data.hex())
 
@@ -239,7 +239,7 @@ class Server:
                     hash_to_send = generate_digest(encrypted_message, self.users[username]['mac_key'], 'sha256')
 
                     print("Encrypted message: " + encrypted_message.hex())
-                    data_to_send = encrypted_message + b' : ' + hash_to_send
+                    data_to_send = encrypted_message + 'ç'.encode('utf-8') + hash_to_send
                     user_data['socket'].send(data_to_send)
                 except Exception as e:
                     print(f"Failed to send message to {username}: {e}")
@@ -248,7 +248,7 @@ class Server:
         try:
             encrypted_message = encrypt_rsa(message.encode('utf-8'), self.users[sender_username]['public_key'])
             hash_to_send = generate_digest(encrypted_message, self.users[sender_username]['mac_key'], 'sha256')
-            data_to_send = encrypted_message + b' : ' + hash_to_send
+            data_to_send = encrypted_message + 'ç'.encode('utf-8') + hash_to_send
             client_socket.send(data_to_send)
         except Exception as e:
             print(f"Failed to send message to {sender_username}: {e}")
@@ -287,14 +287,22 @@ class Server:
             if os.path.exists(file_path):
                 with open(file_path, 'rb') as file:
                     file_data = file.read()
-                hash_to_send = generate_digest(file_data, self.users[sender_username]['mac_key'], 'sha256')
-                data_to_send = file_data + b' : ' + hash_to_send
-                client_socket.send(data_to_send)
+
+                # Send file data in 2048-byte chunks
+                chunk_size = 256
+                for i in range(0, len(file_data), chunk_size):
+                    chunk = file_data[i:i + chunk_size]
+                    hash_to_send = generate_digest(chunk, self.users[sender_username]['mac_key'], 'sha256')
+                    chunk_to_send = chunk + 'ç'.encode('utf-8') + hash_to_send
+                    client_socket.send(chunk_to_send)
+                    time.sleep(0.01)
+                self.send_message(client_socket, "------ END OF FILE ------",sender_username)
                 print(f"Log messages sent to {sender_username} successfully.")
             else:
                 self.send_message(client_socket, f"Log messages file for {sender_username} not found.", sender_username)
         except Exception as e:
             self.send_message(client_socket, f"Failed to send log messages to {sender_username}: {e}", sender_username)
+
 
 
     def start(self):
@@ -309,9 +317,6 @@ class Server:
                 client_handler.start()
         except KeyboardInterrupt:
             print("Server shutdown.")
-
-        # Close the database connection
-        conn.close()
 
 server = Server('127.0.0.1', 5555)
 server.start()

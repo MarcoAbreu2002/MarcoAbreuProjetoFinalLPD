@@ -65,14 +65,18 @@ class Client:
             while True:
                 message = input("Message: ")
                 if message == '/download':
+                    print("Downloading messages...\n")
                     self.action = '/download'
+                if message == '/read':
+                    print("Fetching messages...\n")
+                    self.action = '/read'
                 elif message == '/exit':
                     self.client_socket.close()
                 encrypted_message = encrypt_rsa(message.encode('utf-8'), self.server_public_key)
                 # Generate digest for the message
                 digest_to_send = generate_digest(encrypted_message, self.mac_key, 'sha256')
                 # Attach both the message and the digest when sending
-                data_to_send = encrypted_message + b' : ' + digest_to_send
+                data_to_send = encrypted_message + 'ç'.encode('utf-8') + digest_to_send
                 self.client_socket.send(data_to_send)
         except Exception as e:
             print(f"Error sending message: {e}")
@@ -103,12 +107,13 @@ class Client:
 
     def receive_messages(self):
         try:
+            received_file = ""
             while True:
                 data = self.client_socket.recv(2048)
                 if not data:
                     break
                 # Separate message and digest
-                message_received, received_digest = data.split(b' : ')
+                message_received, received_digest = data.split('ç'.encode('utf-8'))
                 generated_digest = generate_digest(message_received, self.mac_key, 'sha256')
                 # Verify the integrity of the received message
                 is_integrity_verified = verify_digest(received_digest, generated_digest)
@@ -120,12 +125,19 @@ class Client:
                         decrypted_message = decrypt_rsa_in_chunks(message_received, self.client_private_key)
                     # Convert the decrypted message to utf-8
                     message_to_display = decrypted_message.decode('utf-8')
-                    if self.action == "/download":
-                        print("Downloading messages...\n")
-                        self.download_messages(message_to_display,self.username)
-                        time.sleep(0.5)
-                        print("Download Complete!\n")
-                        self.action = None
+                    if self.action == "/download":            
+                        if message_to_display != "------ END OF FILE ------":
+                            received_file += message_to_display
+                        else:
+                            self.download_messages(received_file,self.username)
+                            print("------ END OF FILE ------\n")
+                            self.action = None
+                    elif self.action == "/read":            
+                        if message_to_display != "------ END OF FILE ------":
+                            print(f"{message_to_display}")
+                        else:
+                            print("------ END OF FILE ------\n")
+                            self.action = None
                     else:
                         print(f"\r{message_to_display}\t\t\n", end=' ',flush=True)
         except Exception as e:
