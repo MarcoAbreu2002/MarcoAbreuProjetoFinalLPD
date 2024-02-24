@@ -1,46 +1,62 @@
-import socket
-import time
 import paramiko
+import telnetlib
 
-def knock_sequence(ip, ports):
-    for port in ports:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1)
-            try:
-                s.connect((ip, port))
-                print(f"Knock on port {port}")
-            except socket.error:
-                pass
-            time.sleep(1)
+def knock_sequence(ip_address, sequence):
+    # Knock on the sequence of ports using Telnet
+    for port in sequence:
+        try:
+            tn = telnetlib.Telnet(ip_address, port)
+            tn.close()
+            print(f"Knocked on port {port}")
+        except ConnectionRefusedError:
+            print(f"Port {port} is closed, skipping...")
 
-# Solicitar o endereço IP ao usuário
-ip_address = input("Digite o endereço IP da máquina alvo: ")
-
-# Solicitar o nome de usuário e senha ao usuário
-username = input("Digite o nome de usuário SSH: ")
-password = input("Digite a senha SSH: ")
-
-# Definir a sequência desejada de portas
-port_sequence = [1000, 2000, 3000]
-
-# Chamar a função para realizar a sequência de port knocking
-knock_sequence(ip_address, port_sequence)
-
-# Conectar-se via SSH após a sequência correta
-try:
+def establish_ssh_connection(hostname, username, password):
+    # Create SSH client
     ssh = paramiko.SSHClient()
+
+    # Automatically add untrusted hosts
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    
-    # Conectar com os dados fornecidos pelo usuário
-    ssh.connect(ip_address, port=22, username=username, password=password)
 
-    print("Conexão SSH bem-sucedida!")
-    # Adicione aqui o código para interagir com a sessão SSH, se necessário
+    try:
+        # Connect to the host
+        ssh.connect(hostname, username=username, password=password)
 
-except Exception as e:
-    print(f"Erro na conexão SSH: {e}")
+        print("Connected to", hostname)
 
-finally:
-    # Fechar a conexão SSH, se estiver aberta
-    if ssh:
+        # Keep the connection open until the user types "exit"
+        while True:
+            command = input("$ ")
+            if command.lower() == "exit":
+                break
+            stdin, stdout, stderr = ssh.exec_command(command)
+            for line in stdout:
+                print(line.strip())
+
+        # Close the connection
         ssh.close()
+        print("SSH connection closed.")
+
+    except paramiko.AuthenticationException:
+        print("Authentication failed, please check your credentials.")
+    except paramiko.SSHException as e:
+        print("Unable to establish SSH connection:", str(e))
+    except Exception as e:
+        print("Error:", str(e))
+
+def main():
+    ip_address = input("Enter the IP address you want to connect to: ")
+    sequence_str = input("Enter the door knocking sequence (comma-separated ports): ")
+    sequence = [int(port.strip()) for port in sequence_str.split(',')]
+
+    knock_sequence(ip_address, sequence)
+
+    # Assume you want to establish SSH using password authentication
+    username = input("Enter your SSH username: ")
+    password = input("Enter your SSH password: ")
+
+    establish_ssh_connection(ip_address, username, password)
+
+if __name__ == "__main__":
+    main()
+
