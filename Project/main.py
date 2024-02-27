@@ -3,19 +3,26 @@ import subprocess
 import os
 
 def main():
+    """
+    Main function to run the security application.
+    """
     clear_screen()
     while True:
         menu()
 
 def clear_screen():
-    # Clear screen based on the operating system
+    """
+    Clear the screen based on the operating system.
+    """
     if sys.platform.startswith('win'):
         os.system('cls')  # For Windows
     else:
         os.system('clear')  # For Linux and macOS
 
-
 def menu():
+    """
+    Display the main menu options.
+    """
     print("************Aplicação de Segurança Informática**************")
     print()
 
@@ -53,6 +60,9 @@ def menu():
         print("\nUser interrupted. Returning to the menu.")
 
 def encrypted_chat_menu():
+    """
+    Display the menu for the encrypted chat options.
+    """
     while True:
         print("""
                1: Start Server
@@ -81,6 +91,9 @@ def encrypted_chat_menu():
             print("\nUser interrupted. Returning to the menu.")
 
 def start_server():
+    """
+    Start the server for the encrypted chat.
+    """
     # Check if the server is already running
     server_check_process = subprocess.run(['pgrep', '-f', 'server1.py'], capture_output=True, text=True)
     if server_check_process.stdout.strip():
@@ -91,14 +104,21 @@ def start_server():
         subprocess.Popen(['gnome-terminal', '--',  'python',  'server1.py'])
 
 def start_client():
+    """
+    Start the client for the encrypted chat.
+    """
     print("Starting the client...")
     subprocess.Popen(['gnome-terminal', '--', 'python', 'client1.py'])
 
 def read_log_messages():
+    """
+    Read the log messages for the encrypted chat.
+    """
     print("Starting Log Messages...")
     subprocess.Popen(['gnome-terminal', '--', 'python', 'get_log_messages.py'])
-
 
 if __name__ == "__main__":
     # The program is initiated here
     main()
+
+

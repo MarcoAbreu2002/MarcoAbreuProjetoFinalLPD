@@ -1,7 +1,13 @@
-import paramiko
+import time
 import telnetlib
+import subprocess
+import paramiko
 
 def knock_sequence(ip_address, sequence):
+    """
+    This method receives a remote ip_address and a sequence. Then
+    according to the sequence it creates telnet knocks.
+    """
     # Knock on the sequence of ports using Telnet
     for port in sequence:
         try:
@@ -12,50 +18,43 @@ def knock_sequence(ip_address, sequence):
             print(f"Port {port} is closed, skipping...")
 
 def establish_ssh_connection(hostname, username, password):
-    # Create SSH client
-    ssh = paramiko.SSHClient()
+    command = f"sshpass -p '{password}' ssh {username}@{hostname}"
+    print(f"Tentando conectar via SSH: {command}")
+    subprocess.call(command, shell=True)
 
-    # Automatically add untrusted hosts
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-    try:
-        # Connect to the host
-        ssh.connect(hostname, username=username, password=password)
+def install_packages():
+    packages = ["network-manager-l2tp"]
+    subprocess.run(["sudo", "apt", "update"])
+    subprocess.run(["sudo", "apt", "install", "-y"] + packages)
 
-        print("Connected to", hostname)
+def establish_L2TP_IPSEC_connection(server_ip, pre_shared_key,username, password):
+    # Configure L2TP/IPsec VPN connection in NetworkManager
+    config_cmd = f"nmcli connection add type vpn con-name 'MyVPN' ifname '*' \
+                  vpn-type libreswan ipv4.method auto ipv4.never-default true \
+                  vpn.data 'gateway={server_ip}' \
+                  vpn.user-name {username} vpn.secrets password={password} \
+                  vpn.data 'phase2alg=aes256-sha1'"
+    subprocess.run(config_cmd, shell=True)
 
-        # Keep the connection open until the user types "exit"
-        while True:
-            command = input("$ ")
-            if command.lower() == "exit":
-                break
-            stdin, stdout, stderr = ssh.exec_command(command)
-            for line in stdout:
-                print(line.strip())
-
-        # Close the connection
-        ssh.close()
-        print("SSH connection closed.")
-
-    except paramiko.AuthenticationException:
-        print("Authentication failed, please check your credentials.")
-    except paramiko.SSHException as e:
-        print("Unable to establish SSH connection:", str(e))
-    except Exception as e:
-        print("Error:", str(e))
 
 def main():
     ip_address = input("Enter the IP address you want to connect to: ")
-    sequence_str = input("Enter the door knocking sequence (comma-separated ports): ")
-    sequence = [int(port.strip()) for port in sequence_str.split(',')]
+    sequence_str = input("Enter the door knocking sequence for SSH (comma-separated ports): ")
+    sequence_ssh = [int(port.strip()) for port in sequence_str.split(',')]
 
-    knock_sequence(ip_address, sequence)
+    #sequence_str = input("Enter the door knocking sequence for L2TP/IPSec (comma-separated ports): ")
+    #sequence_l2tp_ipsec = [int(port.strip()) for port in sequence_str.split(',')]
 
-    # Assume you want to establish SSH using password authentication
+    knock_sequence(ip_address, sequence_ssh)
+    #knock_sequence(ip_address, sequence_ssh)
+
     username = input("Enter your SSH username: ")
     password = input("Enter your SSH password: ")
-
     establish_ssh_connection(ip_address, username, password)
+    pre_shared_key = input("Enter the pre-shared key: ")
+    install_packages()
+    establish_L2TP_IPSEC_connection(ip_address, pre_shared_key ,username, password)
 
 if __name__ == "__main__":
     main()

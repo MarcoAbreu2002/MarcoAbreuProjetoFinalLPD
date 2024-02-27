@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>client1 &mdash; Aplicação de Segurança Informática 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Aplicação de Segurança Informática
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Project</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aplicação de Segurança Informática</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">client1</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for client1</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">Crypto.PublicKey</span> <span class="kn">import</span> <span class="n">RSA</span>
+<span class="kn">from</span> <span class="nn">Crypto.Random</span> <span class="kn">import</span> <span class="n">get_random_bytes</span>
+<span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span><span class="p">,</span> <span class="n">PKCS1_OAEP</span>
+<span class="kn">from</span> <span class="nn">integrity</span> <span class="kn">import</span> <span class="n">generate_digest</span><span class="p">,</span> <span class="n">verify_digest</span>
+<span class="kn">from</span> <span class="nn">encryption</span> <span class="kn">import</span> <span class="n">generate_key_pair</span><span class="p">,</span> <span class="n">encrypt_rsa</span><span class="p">,</span> <span class="n">decrypt_rsa</span><span class="p">,</span> <span class="n">decrypt_rsa_in_chunks</span>
+
+<div class="viewcode-block" id="encrypt_private_key">
+<a class="viewcode-back" href="../client1.html#client1.encrypt_private_key">[docs]</a>
+<span class="k">def</span> <span class="nf">encrypt_private_key</span><span class="p">(</span><span class="n">private_key</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encrypts a private key using a passphrase.</span>
+
+<span class="sd">    :param private_key: The private key to encrypt.</span>
+<span class="sd">    :type private_key: RSA.RsaKey</span>
+<span class="sd">    :param passphrase: The passphrase to encrypt the private key.</span>
+<span class="sd">    :type passphrase: str</span>
+<span class="sd">    :return: The encrypted private key.</span>
+<span class="sd">    :rtype: bytes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">encrypted_key</span> <span class="o">=</span> <span class="n">private_key</span><span class="o">.</span><span class="n">export_key</span><span class="p">(</span><span class="n">passphrase</span><span class="o">=</span><span class="n">passphrase</span><span class="p">,</span> <span class="n">pkcs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">protection</span><span class="o">=</span><span class="s2">&quot;scryptAndAES128-CBC&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">encrypted_key</span></div>
+
+
+<div class="viewcode-block" id="decrypt_private_key">
+<a class="viewcode-back" href="../client1.html#client1.decrypt_private_key">[docs]</a>
+<span class="k">def</span> <span class="nf">decrypt_private_key</span><span class="p">(</span><span class="n">encrypted_key_data</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decrypts an encrypted private key using a passphrase.</span>
+
+<span class="sd">    :param encrypted_key_data: The encrypted private key data.</span>
+<span class="sd">    :type encrypted_key_data: bytes</span>
+<span class="sd">    :param passphrase: The passphrase to decrypt the private key.</span>
+<span class="sd">    :type passphrase: str</span>
+<span class="sd">    :return: The decrypted private key or None if decryption fails.</span>
+<span class="sd">    :rtype: RSA.RsaKey or None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">private_key</span> <span class="o">=</span> <span class="n">RSA</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span><span class="n">encrypted_key_data</span><span class="p">,</span> <span class="n">passphrase</span><span class="o">=</span><span class="n">passphrase</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">private_key</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># Handle incorrect password or decryption failure</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Client">
+<a class="viewcode-back" href="../client1.html#client1.Client">[docs]</a>
+<span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the client.</span>
+
+<span class="sd">        :param host: The host IP address.</span>
+<span class="sd">        :type host: str</span>
+<span class="sd">        :param port: The port number.</span>
+<span class="sd">        :type port: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_public_key</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_public_key</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mac_key</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Client.create_new_user">
+<a class="viewcode-back" href="../client1.html#client1.Client.create_new_user">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_new_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new user with a new private key pair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter your Name: &quot;</span><span class="p">)</span>
+        <span class="n">passphrase</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter a password for the new user: &quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_public_key</span> <span class="o">=</span> <span class="n">generate_key_pair</span><span class="p">()</span>
+
+        <span class="c1"># Encrypt and save the private key to a file</span>
+        <span class="n">encrypted_private_key</span> <span class="o">=</span> <span class="n">encrypt_private_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;client_key/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">key_file</span><span class="p">:</span>
+            <span class="n">key_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">encrypted_private_key</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Private key for user </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> saved to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.pem&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.load_existing_user">
+<a class="viewcode-back" href="../client1.html#client1.Client.load_existing_user">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_existing_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads an existing user&#39;s private key from a file.</span>
+<span class="sd">        If the file doesn&#39;t exist or the passphrase is incorrect, prompts to create a new user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter your Name: &quot;</span><span class="p">)</span>
+        <span class="n">passphrase</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the password for the existing user: &quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;client_key/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">key_file</span><span class="p">:</span>
+                <span class="n">encrypted_private_key</span> <span class="o">=</span> <span class="n">key_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span> <span class="o">=</span> <span class="n">decrypt_private_key</span><span class="p">(</span><span class="n">encrypted_private_key</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client_public_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incorrect password or decryption failure&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Private key for user </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> loaded successfully.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> not found. Please choose a new user.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_new_user</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Client.send_message">
+<a class="viewcode-back" href="../client1.html#client1.Client.send_message">[docs]</a>
+    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends messages from the client to the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Message: &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s1">&#39;/download&#39;</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading messages...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;/download&#39;</span>
+                <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s1">&#39;/read&#39;</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fetching messages...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;/read&#39;</span>
+                <span class="k">elif</span> <span class="n">message</span> <span class="o">==</span> <span class="s1">&#39;/exit&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">encrypted_message</span> <span class="o">=</span> <span class="n">encrypt_rsa</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_public_key</span><span class="p">)</span>
+                <span class="n">digest_to_send</span> <span class="o">=</span> <span class="n">generate_digest</span><span class="p">(</span><span class="n">encrypted_message</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mac_key</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">)</span>
+                <span class="n">data_to_send</span> <span class="o">=</span> <span class="n">encrypted_message</span> <span class="o">+</span> <span class="s1">&#39;ç&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">digest_to_send</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data_to_send</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending message: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.receive_public_key_and_mac_key">
+<a class="viewcode-back" href="../client1.html#client1.Client.receive_public_key_and_mac_key">[docs]</a>
+    <span class="k">def</span> <span class="nf">receive_public_key_and_mac_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receives the server&#39;s public key and the encrypted MAC key from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">public_key_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server_public_key</span> <span class="o">=</span> <span class="n">RSA</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span><span class="n">public_key_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Received server&#39;s public key.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client_public_key</span><span class="o">.</span><span class="n">export_key</span><span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sent client&#39;s public key to the server.&quot;</span><span class="p">)</span>
+            <span class="n">encrypted_mac_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mac_key</span> <span class="o">=</span> <span class="n">decrypt_rsa</span><span class="p">(</span><span class="n">encrypted_mac_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received and decrypted MAC key from the server: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mac_key</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during key exchange: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.remove_last_line">
+<a class="viewcode-back" href="../client1.html#client1.Client.remove_last_line">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_last_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes the last line printed on the console.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[F&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[K&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.receive_messages">
+<a class="viewcode-back" href="../client1.html#client1.Client.receive_messages">[docs]</a>
+    <span class="k">def</span> <span class="nf">receive_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receives and displays messages from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">received_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">message_received</span><span class="p">,</span> <span class="n">received_digest</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;ç&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="n">generated_digest</span> <span class="o">=</span> <span class="n">generate_digest</span><span class="p">(</span><span class="n">message_received</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mac_key</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">)</span>
+                <span class="n">is_integrity_verified</span> <span class="o">=</span> <span class="n">verify_digest</span><span class="p">(</span><span class="n">received_digest</span><span class="p">,</span> <span class="n">generated_digest</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_integrity_verified</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">message_received</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">150</span><span class="p">:</span>
+                        <span class="n">decrypted_message</span> <span class="o">=</span> <span class="n">decrypt_rsa</span><span class="p">(</span><span class="n">message_received</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">decrypted_message</span> <span class="o">=</span> <span class="n">decrypt_rsa_in_chunks</span><span class="p">(</span><span class="n">message_received</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_private_key</span><span class="p">)</span>
+                    <span class="n">message_to_display</span> <span class="o">=</span> <span class="n">decrypted_message</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;/download&quot;</span><span class="p">:</span>            
+                        <span class="k">if</span> <span class="n">message_to_display</span> <span class="o">!=</span> <span class="s2">&quot;------ END OF FILE ------&quot;</span><span class="p">:</span>
+                            <span class="n">received_file</span> <span class="o">+=</span> <span class="n">message_to_display</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">download_messages</span><span class="p">(</span><span class="n">received_file</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------ END OF FILE ------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;/read&quot;</span><span class="p">:</span>            
+                        <span class="k">if</span> <span class="n">message_to_display</span> <span class="o">!=</span> <span class="s2">&quot;------ END OF FILE ------&quot;</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message_to_display</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------ END OF FILE ------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="si">{</span><span class="n">message_to_display</span><span class="si">}</span><span class="se">\t\t\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error receiving message: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.download_messages">
+<a class="viewcode-back" href="../client1.html#client1.Client.download_messages">[docs]</a>
+    <span class="k">def</span> <span class="nf">download_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">messages_to_display</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads and saves messages received from the server to a file.</span>
+
+<span class="sd">        :param messages_to_display: The messages to be downloaded.</span>
+<span class="sd">        :type messages_to_display: str</span>
+<span class="sd">        :param username: The username of the client.</span>
+<span class="sd">        :type username: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">_downloaded_messages.txt&quot;</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">base_filename</span> <span class="k">if</span> <span class="n">counter</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">).txt&quot;</span> 
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages_to_display</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Client.start">
+<a class="viewcode-back" href="../client1.html#client1.Client.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;****************************************&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***        Encrypted chat            ***&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** /read - read all messages sent    ***&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** /download - Download all messages ***&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** /exit - leave                     ***&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;****************************************&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected to the server at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">existing_user</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Do you want to use an existing user? (yes/no): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">existing_user</span> <span class="o">==</span> <span class="s1">&#39;yes&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_existing_user</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">existing_user</span> <span class="o">==</span> <span class="s1">&#39;no&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_new_user</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid option! Leaving...&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">receive_public_key_and_mac_key</span><span class="p">()</span>
+
+            <span class="n">send_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">)</span>
+            <span class="n">receive_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">receive_messages</span><span class="p">)</span>
+
+            <span class="n">send_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">receive_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="n">send_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="n">receive_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Client terminated.&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</div>
+
+
+<span class="c1"># Initialize and start the client</span>
+<span class="c1">#client = Client(&#39;127.0.0.1&#39;, 5555)</span>
+<span class="c1">#client.start()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Marco Abreu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

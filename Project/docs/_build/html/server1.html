@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>server1 module &mdash; Aplicação de Segurança Informática 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="synflood module" href="synflood.html" />
+    <link rel="prev" title="portscanner module" href="portscanner.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Aplicação de Segurança Informática
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Project</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="client1.html">client1 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doorknocking.html">doorknocking module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encryption.html">encryption module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_log_messages.html">get_log_messages module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrity.html">integrity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="portscanner.html">portscanner module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">server1 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#server1.Server"><code class="docutils literal notranslate"><span class="pre">Server</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.broadcast"><code class="docutils literal notranslate"><span class="pre">Server.broadcast()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.encrypt_file"><code class="docutils literal notranslate"><span class="pre">Server.encrypt_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.generate_user_mac_key"><code class="docutils literal notranslate"><span class="pre">Server.generate_user_mac_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.handle_client"><code class="docutils literal notranslate"><span class="pre">Server.handle_client()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.register_user"><code class="docutils literal notranslate"><span class="pre">Server.register_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.remove_log_messages"><code class="docutils literal notranslate"><span class="pre">Server.remove_log_messages()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.send_log_messages"><code class="docutils literal notranslate"><span class="pre">Server.send_log_messages()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.send_mac_key_encrypted"><code class="docutils literal notranslate"><span class="pre">Server.send_mac_key_encrypted()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.send_message"><code class="docutils literal notranslate"><span class="pre">Server.send_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.send_public_key"><code class="docutils literal notranslate"><span class="pre">Server.send_public_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.setup_database"><code class="docutils literal notranslate"><span class="pre">Server.setup_database()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.start"><code class="docutils literal notranslate"><span class="pre">Server.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server1.Server.store_message"><code class="docutils literal notranslate"><span class="pre">Server.store_message()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#server1.decrypt_private_key"><code class="docutils literal notranslate"><span class="pre">decrypt_private_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server1.encrypt_private_key"><code class="docutils literal notranslate"><span class="pre">encrypt_private_key()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="synflood.html">synflood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="udpflood.html">udpflood module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Aplicação de Segurança Informática</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Project</a></li>
+      <li class="breadcrumb-item active">server1 module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/server1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-server1">
+<span id="server1-module"></span><h1>server1 module<a class="headerlink" href="#module-server1" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="server1.Server">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server1.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.broadcast">
+<span class="sig-name descname"><span class="pre">broadcast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.broadcast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.broadcast" title="Link to this definition"></a></dt>
+<dd><p>Broadcasts a message to all users except the sender.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>) – The message to broadcast.</p></li>
+<li><p><strong>sender_username</strong> (<em>str</em>) – The username of the sender.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.encrypt_file">
+<span class="sig-name descname"><span class="pre">encrypt_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plaintext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.encrypt_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.encrypt_file" title="Link to this definition"></a></dt>
+<dd><p>Encrypts a plaintext file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plaintext</strong> (<em>str</em>) – The plaintext to encrypt.</p></li>
+<li><p><strong>public_key</strong> (<em>RSA.RsaKey</em>) – The public key for encryption.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The username associated with the plaintext.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.generate_user_mac_key">
+<span class="sig-name descname"><span class="pre">generate_user_mac_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.generate_user_mac_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.generate_user_mac_key" title="Link to this definition"></a></dt>
+<dd><p>Generates a random MAC key for a user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The generated MAC key.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.handle_client">
+<span class="sig-name descname"><span class="pre">handle_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.handle_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.handle_client" title="Link to this definition"></a></dt>
+<dd><p>Handles communication with a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_socket</strong> (<em>socket.socket</em>) – The client socket.</p></li>
+<li><p><strong>client_address</strong> (<em>tuple</em>) – The client’s address.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.register_user">
+<span class="sig-name descname"><span class="pre">register_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_public_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.register_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.register_user" title="Link to this definition"></a></dt>
+<dd><p>Registers a user with their username, socket, and public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the user.</p></li>
+<li><p><strong>client_socket</strong> (<em>socket.socket</em>) – The socket object associated with the user.</p></li>
+<li><p><strong>client_public_key</strong> (<em>RSA.RsaKey</em>) – The public key of the user.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.remove_log_messages">
+<span class="sig-name descname"><span class="pre">remove_log_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.remove_log_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.remove_log_messages" title="Link to this definition"></a></dt>
+<dd><p>Removes log messages for a user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_socket</strong> (<em>socket.socket</em>) – The client socket.</p></li>
+<li><p><strong>sender_username</strong> (<em>str</em>) – The username of the sender.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.send_log_messages">
+<span class="sig-name descname"><span class="pre">send_log_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.send_log_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.send_log_messages" title="Link to this definition"></a></dt>
+<dd><p>Sends log messages to a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_socket</strong> (<em>socket.socket</em>) – The client socket.</p></li>
+<li><p><strong>sender_username</strong> (<em>str</em>) – The username of the sender.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.send_mac_key_encrypted">
+<span class="sig-name descname"><span class="pre">send_mac_key_encrypted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_public_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.send_mac_key_encrypted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.send_mac_key_encrypted" title="Link to this definition"></a></dt>
+<dd><p>Sends the MAC key encrypted to a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_socket</strong> (<em>socket.socket</em>) – The client socket.</p></li>
+<li><p><strong>client_public_key</strong> (<em>RSA.RsaKey</em>) – The client’s public key.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.send_message" title="Link to this definition"></a></dt>
+<dd><p>Sends a message to a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_socket</strong> (<em>socket.socket</em>) – The client socket.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The message to send.</p></li>
+<li><p><strong>sender_username</strong> (<em>str</em>) – The username of the sender.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.send_public_key">
+<span class="sig-name descname"><span class="pre">send_public_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_socket</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.send_public_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.send_public_key" title="Link to this definition"></a></dt>
+<dd><p>Sends the server’s public key to a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client_socket</strong> (<em>socket.socket</em>) – The client socket.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.setup_database">
+<span class="sig-name descname"><span class="pre">setup_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.setup_database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.setup_database" title="Link to this definition"></a></dt>
+<dd><p>Sets up the SQLite database for storing messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.start" title="Link to this definition"></a></dt>
+<dd><p>Starts the server and listens for incoming connections.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server1.Server.store_message">
+<span class="sig-name descname"><span class="pre">store_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#Server.store_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.Server.store_message" title="Link to this definition"></a></dt>
+<dd><p>Stores a message from a sender.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sender</strong> (<em>str</em>) – The username of the sender.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The message to store.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server1.decrypt_private_key">
+<span class="sig-prename descclassname"><span class="pre">server1.</span></span><span class="sig-name descname"><span class="pre">decrypt_private_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_key_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passphrase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#decrypt_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.decrypt_private_key" title="Link to this definition"></a></dt>
+<dd><p>Decrypts an encrypted private key using a passphrase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>encrypted_key_data</strong> (<em>bytes</em>) – The encrypted private key data.</p></li>
+<li><p><strong>passphrase</strong> (<em>str</em>) – The passphrase used for decryption.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decrypted private key.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RSA.RsaKey or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server1.encrypt_private_key">
+<span class="sig-prename descclassname"><span class="pre">server1.</span></span><span class="sig-name descname"><span class="pre">encrypt_private_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">private_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passphrase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server1.html#encrypt_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server1.encrypt_private_key" title="Link to this definition"></a></dt>
+<dd><p>Encrypts a private key with a passphrase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>private_key</strong> (<em>RSA.RsaKey</em>) – The private key to be encrypted.</p></li>
+<li><p><strong>passphrase</strong> (<em>str</em>) – The passphrase to encrypt the private key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The encrypted private key.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="portscanner.html" class="btn btn-neutral float-left" title="portscanner module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="synflood.html" class="btn btn-neutral float-right" title="synflood module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Marco Abreu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

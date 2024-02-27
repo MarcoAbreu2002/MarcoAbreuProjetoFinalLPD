@@ -5,14 +5,22 @@ import pickle
 from reportlab.pdfgen import canvas
 import csv
 
-pickle_file = open('port_description.dat', 'rb')
-data = skill = pickle.load(pickle_file)
+pickle_file = "Hello" #open('port_description.dat', 'rb')
+data = skill = "hey" #pickle.load(pickle_file)
 
 # Lista global para relatório PDF e lista CSV
 report_data = []
 csv_data = []
 
 def generate_pdf(report_data, file_path):
+    """
+    Generate a PDF report containing the provided data.
+
+    :param report_data: The data to include in the PDF report.
+    :type report_data: list[str]
+    :param file_path: The file path where the PDF report will be saved.
+    :type file_path: str
+    """
     c = canvas.Canvas(file_path)
     for line in report_data:
         c.drawString(100, 100, line)
@@ -20,12 +28,28 @@ def generate_pdf(report_data, file_path):
     c.save()
 
 def generate_csv(data, file_path):
+    """
+    Generate a CSV file containing the provided data.
+
+    :param data: The data to include in the CSV file.
+    :type data: list[list[Any]]
+    :param file_path: The file path where the CSV file will be saved.
+    :type file_path: str
+    """
     with open(file_path, 'w', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
         for row in data:
             csv_writer.writerow(row)
 
 def get_port_description(port):
+    """
+    Retrieve the description of a port.
+
+    :param port: The port number.
+    :type port: int
+    :return: The description of the port.
+    :rtype: str
+    """
     try:
         service_name = socket.getservbyport(port)
         return f"Service: {service_name}"
@@ -33,6 +57,14 @@ def get_port_description(port):
         return f"No Known service for port {port}"
 
 def scantcp(r1, r2):
+    """
+    Scan TCP ports within the specified range.
+
+    :param r1: The starting port number.
+    :type r1: int
+    :param r2: The ending port number.
+    :type r2: int
+    """
     global report_data, csv_data
 
     try:
@@ -60,24 +92,24 @@ def scantcp(r1, r2):
 print('*' * 60)
 print(' \tPort scanner \n ')
 
-d = input('\tD - Domain Name | I - IP Address\t')
+d = 'D' #input('\tD - Domain Name | I - IP Address\t')
 if d == 'D' or d == 'd':
-    rmserver = input('\t Enter the Domain Name to scan:\t')
+    rmserver = '2' #input('\t Enter the Domain Name to scan:\t')
     rmip = socket.gethostbyname(rmserver)
 elif d == 'I' or d == 'i':
-    rmip = input('\t Enter the IP Address to scan: ')
+    rmip = '1' #input('\t Enter the IP Address to scan: ')
 else:
     print('Wrong input')
 
-port_start1 = int(input('\t Enter the start port number\t'))
-port_last1 = int(input('\t Enter the last port number\t'))
+port_start1 = 1 #int(input('\t Enter the start port number\t'))
+port_last1 = 2 #int(input('\t Enter the last port number\t'))
 
 if port_last1 > 65535:
     print('Range not Ok')
     port_last1 = 65535
     print('Setting last port 65535')
 
-conect = input('Low connectivity = L | High connectivity = H \t')
+conect = 'L' #input('Low connectivity = L | High connectivity = H \t')
 
 if conect == 'L' or conect == 'l':
     c = 1.5

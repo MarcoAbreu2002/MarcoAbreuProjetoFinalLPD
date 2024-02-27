@@ -5,9 +5,17 @@ import sys
 from Crypto.PublicKey import RSA
 from encryption import decrypt_rsa_in_chunks
 
-
 def decrypt_private_key(encrypted_key_data, passphrase):
-    # Decrypt the private key
+    """
+    Decrypts the private key using the provided passphrase.
+
+    Args:
+        encrypted_key_data (bytes): The encrypted private key data.
+        passphrase (str): The passphrase used for decryption.
+
+    Returns:
+        RSA.RsaKey or None: The decrypted private key if successful, None otherwise.
+    """
     try:
         private_key = RSA.import_key(encrypted_key_data, passphrase=passphrase)
         return private_key
@@ -16,13 +24,22 @@ def decrypt_private_key(encrypted_key_data, passphrase):
         return None
 
 def get_private_key_password(encrypted_private_key):
+    """
+    Prompts the user for the private key password and attempts to decrypt the private key.
+
+    Args:
+        encrypted_private_key (bytes): The encrypted private key data.
+
+    Returns:
+        RSA.RsaKey: The decrypted private key if successful.
+    """
     password_attempts = 3
     while password_attempts > 0:
         password = getpass.getpass("Enter the private key password: ")
-        decrypted_private_key = RSA.import_key(encrypted_private_key, passphrase= password)
+        decrypted_private_key = RSA.import_key(encrypted_private_key, passphrase=password)
         if decrypted_private_key is not None:
             print("Key Restored!")
-            return  decrypted_private_key
+            return decrypted_private_key
         else:
             print("Incorrect password. Please try again.")
             password_attempts -= 1
@@ -31,10 +48,16 @@ def get_private_key_password(encrypted_private_key):
     sys.exit()
 
 def decrypt_log_messages():
+    """
+    Decrypts log messages stored in a SQLite database using an encrypted private key.
+
+    """
     try:
+        # Read the encrypted private key from file
         with open("server_private_key_encrypted.pem", "rb") as f:
             encrypted_private_key = f.read()
 
+        # Decrypt the private key
         decrypted_private_key = get_private_key_password(encrypted_private_key)
 
         # Connect to the SQLite database
@@ -55,7 +78,6 @@ def decrypt_log_messages():
         while True:
             pass
 
-
     except FileNotFoundError as fnfe:
         print(f"Private key file not found: {fnfe}")
     except sqlite3.Error as sqle:
@@ -65,8 +87,6 @@ def decrypt_log_messages():
     finally:
         # Close the cursor and connection
         cursor.close()
-
-
 
 if __name__ == "__main__":
     decrypt_log_messages()
