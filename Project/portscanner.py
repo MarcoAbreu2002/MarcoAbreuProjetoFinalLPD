@@ -1,3 +1,4 @@
+import sys
 from threading import Thread
 import socket
 from datetime import datetime
@@ -5,10 +6,13 @@ import pickle
 from reportlab.pdfgen import canvas
 import csv
 
-pickle_file = "Hello" #open('port_description.dat', 'rb')
-data = skill = "hey" #pickle.load(pickle_file)
+# File path for pickle file
+pickle_file =  open('port_description.dat', 'rb')
 
-# Lista global para relatório PDF e lista CSV
+# Data and skill information
+data = skill = pickle.load(pickle_file)
+
+# Global lists for PDF report and CSV list
 report_data = []
 csv_data = []
 
@@ -22,9 +26,10 @@ def generate_pdf(report_data, file_path):
     :type file_path: str
     """
     c = canvas.Canvas(file_path)
+    y = 800
     for line in report_data:
-        c.drawString(100, 100, line)
-        c.showPage()
+        c.drawString(30, y, line)
+        y -=20
     c.save()
 
 def generate_csv(data, file_path):
@@ -78,38 +83,38 @@ def scantcp(r1, r2):
                     description = get_port_description(port)
                 print('Port Open:-->\t', port, '--', description)
 
-                # Adicione ao relatório PDF
+                # Add to PDF report
                 report_data.append(f"Port Open: {port} - {description}")
 
-                # Adicione à lista CSV
+                # Add to CSV list
                 csv_data.append([port, description])
 
                 sock.close()
     except Exception as e:
         print(e)
 
-#banner
+# banner
 print('*' * 60)
 print(' \tPort scanner \n ')
 
-d = 'D' #input('\tD - Domain Name | I - IP Address\t')
+d = input('\tD - Domain Name | I - IP Address\t')
 if d == 'D' or d == 'd':
-    rmserver = '2' #input('\t Enter the Domain Name to scan:\t')
+    rmserver =  input('\t Enter the Domain Name to scan:\t')
     rmip = socket.gethostbyname(rmserver)
 elif d == 'I' or d == 'i':
-    rmip = '1' #input('\t Enter the IP Address to scan: ')
+    rmip =  input('\t Enter the IP Address to scan: ')
 else:
     print('Wrong input')
 
-port_start1 = 1 #int(input('\t Enter the start port number\t'))
-port_last1 = 2 #int(input('\t Enter the last port number\t'))
+port_start1 =  int(input('\t Enter the start port number\t'))
+port_last1 =  int(input('\t Enter the last port number\t'))
 
 if port_last1 > 65535:
     print('Range not Ok')
     port_last1 = 65535
     print('Setting last port 65535')
 
-conect = 'L' #input('Low connectivity = L | High connectivity = H \t')
+conect =  input('Low connectivity = L | High connectivity = H \t')
 
 if conect == 'L' or conect == 'l':
     c = 1.5
@@ -118,10 +123,9 @@ elif conect == 'H' or conect == 'h':
 else:
     print('\twrong Input')
 
-# Iniciar a varredura de portas em threads
+# Start port scanning in threads
 print("\nScanning in progress... ", rmip)
 print('*' * 60)
-
 t1 = datetime.now()
 total_ports = port_last1 - port_start1
 ports_by_one_thread = 30
@@ -160,7 +164,7 @@ try:
 except KeyboardInterrupt:
     print("\nUser interrupted. Stopping the port scan.")
 
-# Aguarde a conclusão de todas as threads
+# Wait for all threads to complete
 for thread in threads:
     thread.join()
 
@@ -169,6 +173,6 @@ t2 = datetime.now()
 total = t2 - t1
 print('Scanning complete in ', total)
 
-# Gerar relatório e lista
+# Generate report and list
 generate_pdf(report_data, "relatorio.pdf")
 generate_csv(csv_data, "lista.csv")

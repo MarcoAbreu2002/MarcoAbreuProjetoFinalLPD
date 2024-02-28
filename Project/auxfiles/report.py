@@ -5,7 +5,6 @@ def generate_pdf(report_data, file_path):
     c = canvas.Canvas(file_path)
     for line in report_data:
         c.drawString(100, 100, line)  # Adapte conforme necessário
-        c.showPage()
     c.save()
 
 # Exemplo de geração de lista CSV
@@ -16,3 +15,4 @@ def generate_csv(data, file_path):
         csv_writer = csv.writer(csvfile)
         for row in data:
             csv_writer.writerow(row)
+
