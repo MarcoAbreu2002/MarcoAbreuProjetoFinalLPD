@@ -31,6 +31,7 @@ def menu():
                B: UDP flood (DoS)
                C: SYN flood (TCP SYN)
                D: Encrypted Chat
+               E: Door Knocking
                Q: Quit
 
                Escolha a opção desejada: """)
@@ -51,6 +52,8 @@ def menu():
                 syn_flood_process.wait()
             case "D":
                 encrypted_chat_menu()
+            case "E":
+                door_knocking()
             case "Q":
                 print("Exiting the program.")
                 sys.exit()
@@ -116,6 +119,14 @@ def read_log_messages():
     """
     print("Starting Log Messages...")
     subprocess.Popen(['gnome-terminal', '--', 'python', 'get_log_messages.py'])
+
+def door_knocking():
+    """
+    Start Door knocking.
+    """
+    print("Starting the Door knocking...")
+    subprocess.Popen(['gnome-terminal', '--', 'python', 'doorknocking.py'])
+
 
 if __name__ == "__main__":
     # The program is initiated here

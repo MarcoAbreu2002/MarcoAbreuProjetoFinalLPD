@@ -385,5 +385,5 @@ class Server:
             print("Server shutdown.")
 
 # Initialize and start the server
-#server = Server('127.0.0.1', 5555)
-#server.start()
+server = Server('127.0.0.1', 5555)
+server.start()

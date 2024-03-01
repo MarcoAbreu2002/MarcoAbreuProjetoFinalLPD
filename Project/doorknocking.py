@@ -29,13 +29,35 @@ def install_packages():
     subprocess.run(["sudo", "apt", "install", "-y"] + packages)
 
 def establish_L2TP_IPSEC_connection(server_ip, pre_shared_key,username, password):
-    # Configure L2TP/IPsec VPN connection in NetworkManager
-    config_cmd = f"nmcli connection add type vpn con-name 'MyVPN' ifname '*' \
-                  vpn-type libreswan ipv4.method auto ipv4.never-default true \
-                  vpn.data 'gateway={server_ip}' \
-                  vpn.user-name {username} vpn.secrets password={password} \
-                  vpn.data 'phase2alg=aes256-sha1'"
-    subprocess.run(config_cmd, shell=True)
+    # Step 1: Create L2TP options file
+    l2tp_options = """
+    lock
+    noauth
+    refuse-eap
+    refuse-pap
+    refuse-chap
+    refuse-mschap
+    nobsdcomp
+    nodeflate
+    require-mschap-v2
+    name {username}
+    password {password}
+    """
+    with open('/etc/ppp/options.l2tpd.client', 'w') as f:
+        f.write(l2tp_options.format(username=username, password=password))
+
+    # Step 2: Start the VPN connection
+    subprocess.run(['sudo', 'ipsec', 'up', 'myvpn'], check=True)
+    subprocess.run(['sudo', 'echo', 'c myvpn', '|', 'sudo', 'tee', '/var/run/xl2tpd/l2tp-control'], shell=True, check=True)
+    time.sleep(2)  # Wait for the connection to establish
+
+    # Step 3: Add the route
+    subprocess.run(['sudo', 'ip', 'route', 'add', vpn_server_ip, 'dev', 'ppp0'], check=True)
+
+
+
+
+
 
 
 def main():

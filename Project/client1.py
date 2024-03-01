@@ -237,5 +237,5 @@ class Client:
             self.client_socket.close()
 
 # Initialize and start the client
-#client = Client('127.0.0.1', 5555)
-#client.start()
+client = Client('127.0.0.1', 5555)
+client.start()

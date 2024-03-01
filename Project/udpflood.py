@@ -17,10 +17,10 @@ def send_packet(target_ip, target_port, msg_to_send):
 
 try:
     # Get user input for target IP, target port, and number of packets
-    target_ip = 1 #input("Enter the target IP address: ")
-    target_port = 1 #int(input("Enter the target port: "))
-    num_packets = 1 #int(input("Enter the number of packets to send: "))
-    msg_to_send = '1' #input("Enter a message to send to the target: ")
+    target_ip = input("Enter the target IP address: ")
+    target_port = int(input("Enter the target port: "))
+    num_packets = int(input("Enter the number of packets to send: "))
+    msg_to_send = input("Enter a message to send to the target: ")
 
     # Create a thread for each packet and start them concurrently
     threads = []
