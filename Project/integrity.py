@@ -1,7 +1,6 @@
 import hmac
 import hashlib
 
-@staticmethod
 def generate_digest(message, key, mac_algorithm):
     """
     Generate a digest for the given message using the specified key and MAC algorithm.
@@ -20,7 +19,6 @@ def generate_digest(message, key, mac_algorithm):
     hash_obj = hashlib.new(mac_algorithm, key + message)
     return hash_obj.digest()
 
-@staticmethod
 def verify_digest(digest, computed_digest):
     """
     Verify the integrity of a digest.
