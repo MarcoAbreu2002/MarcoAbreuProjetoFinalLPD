@@ -1,6 +1,0 @@
-9200,Elasticsearch—default Elasticsearch port -  Unofficial TCP
-9000,QBittorrent's embedded torrent tracker default port-  Unofficial TCP
-9300,IBM Cognos BI[citation needed] -  Unofficial TCP
-27017,MongoDB daemon process (mongod) and routing service (mongos)- No UDP Unofficial TCP
-12201,Graylog Extended Log Format (GELF)[importance?] -  Unofficial TCP and UDP
-1515,No Known service for port 1515

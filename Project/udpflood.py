@@ -24,7 +24,7 @@ def send_packet(target_ip, target_port, msg_to_send):
 
 try:
     # Get user input for target IP, target port, and number of packets
-    target_ip = input("Enter the target IP address: ")
+    target_ip = "12" #input("Enter the target IP address: ")
     
     # Validate the target IP address format
     ip_format_regex = r'^(\d{1,3}\.){3}\d{1,3}$'  # Regular expression pattern for IPv4 address
@@ -32,9 +32,9 @@ try:
         print("Invalid IP address format. Please enter a valid IP address.")
         sys.exit(1)
 
-    target_port = int(input("Enter the target port: "))
-    num_packets = int(input("Enter the number of packets to send: "))
-    msg_to_send = input("Enter a message to send to the target: ")
+    target_port = 80 #int(input("Enter the target port: "))
+    num_packets = 80 #int(input("Enter the number of packets to send: "))
+    msg_to_send = "hello" #input("Enter a message to send to the target: ")
 
     # Timeout for connection (in seconds)
     timeout_seconds = 5  # Adjust as needed

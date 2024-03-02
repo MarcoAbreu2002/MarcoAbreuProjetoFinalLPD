@@ -10,6 +10,9 @@ GRAYLOG_PORT = 12201
 
 # Function to generate a random IP address
 def generate_random_ip():
+    """
+    Generates a random IP address in the format xxx.xxx.xxx.xxx.
+    """
     return f'{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}'
 
 # Configure logging to send GELF messages to Graylog

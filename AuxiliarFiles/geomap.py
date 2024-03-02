@@ -27,5 +27,8 @@ gdf.plot(ax=ax, marker='o', color='red', markersize=50, alpha=0.7)
 for x, y, label in zip(gdf.geometry.x, gdf.geometry.y, gdf['dst_ip_geo_city_name']):
     ax.text(x, y, label, fontsize=8, ha='right')
 
+# Set the title for the plot
 plt.title('Locations on World Map')
+
+# Display the plot
 plt.show()

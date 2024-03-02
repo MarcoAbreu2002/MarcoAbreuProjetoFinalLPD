@@ -103,8 +103,8 @@ def send_packets(target_ip, num_packets, num_threads):
         pass
 
 if __name__ == "__main__":
-    target_ip = input("Enter the target IP: ")
-    num_packets = int(input("Enter the number of packets to send per thread: "))
-    num_threads = int(input("Enter the number of threads: "))
+    target_ip = "1" #input("Enter the target IP: ")
+    num_packets = 2 #int(input("Enter the number of packets to send per thread: "))
+    num_threads = 2 #int(input("Enter the number of threads: "))
 
     send_packets(target_ip, num_packets, num_threads)
