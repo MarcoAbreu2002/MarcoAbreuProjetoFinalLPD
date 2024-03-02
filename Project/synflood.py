@@ -2,6 +2,7 @@ from scapy.all import *
 import threading
 import signal
 import sys
+import re
 
 # Global variables
 send_lock = threading.Lock()
@@ -55,6 +56,18 @@ def signal_handler(sig, frame):
     stop_event.set()
     sys.exit(0)
 
+def validate_ip(ip):
+    """
+    Validate the format of an IP address.
+
+    :param ip: The IP address to validate.
+    :type ip: str
+    :return: True if the IP address is valid, False otherwise.
+    :rtype: bool
+    """
+    ip_format_regex = r'^(\d{1,3}\.){3}\d{1,3}$'  # Regular expression pattern for IPv4 address
+    return bool(re.match(ip_format_regex, ip))
+
 def send_packets(target_ip, num_packets, num_threads):
     """
     Send packets to a target IP using multiple threads.
@@ -66,6 +79,10 @@ def send_packets(target_ip, num_packets, num_threads):
     :param num_threads: The number of threads to use.
     :type num_threads: int
     """
+    if not validate_ip(target_ip):
+        print("Invalid IP address format. Please enter a valid IP address.")
+        sys.exit(1)
+
     signal.signal(signal.SIGINT, signal_handler)
     threads = []
     for _ in range(num_threads):

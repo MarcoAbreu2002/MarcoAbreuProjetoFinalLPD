@@ -112,6 +112,7 @@
 <span class="s2">               B: UDP flood (DoS)</span>
 <span class="s2">               C: SYN flood (TCP SYN)</span>
 <span class="s2">               D: Encrypted Chat</span>
+<span class="s2">               E: Door Knocking</span>
 <span class="s2">               Q: Quit</span>
 
 <span class="s2">               Escolha a opção desejada: &quot;&quot;&quot;</span><span class="p">)</span>
@@ -132,6 +133,8 @@
                 <span class="n">syn_flood_process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
             <span class="k">case</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
                 <span class="n">encrypted_chat_menu</span><span class="p">()</span>
+            <span class="k">case</span> <span class="s2">&quot;E&quot;</span><span class="p">:</span>
+                <span class="n">door_knocking</span><span class="p">()</span>
             <span class="k">case</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting the program.&quot;</span><span class="p">)</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
@@ -209,6 +212,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting Log Messages...&quot;</span><span class="p">)</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s1">&#39;gnome-terminal&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;get_log_messages.py&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="door_knocking">
+<a class="viewcode-back" href="../main.html#main.door_knocking">[docs]</a>
+<span class="k">def</span> <span class="nf">door_knocking</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Start Door knocking.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting the Door knocking...&quot;</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s1">&#39;gnome-terminal&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;doorknocking.py&#39;</span><span class="p">])</span></div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

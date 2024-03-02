@@ -47,22 +47,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Project</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">client1 module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#client1.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.create_new_user"><code class="docutils literal notranslate"><span class="pre">Client.create_new_user()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.download_messages"><code class="docutils literal notranslate"><span class="pre">Client.download_messages()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.load_existing_user"><code class="docutils literal notranslate"><span class="pre">Client.load_existing_user()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.receive_messages"><code class="docutils literal notranslate"><span class="pre">Client.receive_messages()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.receive_public_key_and_mac_key"><code class="docutils literal notranslate"><span class="pre">Client.receive_public_key_and_mac_key()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.remove_last_line"><code class="docutils literal notranslate"><span class="pre">Client.remove_last_line()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.send_message"><code class="docutils literal notranslate"><span class="pre">Client.send_message()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#client1.Client.start"><code class="docutils literal notranslate"><span class="pre">Client.start()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#client1.decrypt_private_key"><code class="docutils literal notranslate"><span class="pre">decrypt_private_key()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#client1.encrypt_private_key"><code class="docutils literal notranslate"><span class="pre">encrypt_private_key()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">client1 module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doorknocking.html">doorknocking module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="encryption.html">encryption module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_log_messages.html">get_log_messages module</a></li>
@@ -101,111 +86,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-client1">
-<span id="client1-module"></span><h1>client1 module<a class="headerlink" href="#module-client1" title="Link to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="client1.Client">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">client1.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.create_new_user">
-<span class="sig-name descname"><span class="pre">create_new_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.create_new_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.create_new_user" title="Link to this definition"></a></dt>
-<dd><p>Creates a new user with a new private key pair.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.download_messages">
-<span class="sig-name descname"><span class="pre">download_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages_to_display</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.download_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.download_messages" title="Link to this definition"></a></dt>
-<dd><p>Downloads and saves messages received from the server to a file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>messages_to_display</strong> (<em>str</em>) – The messages to be downloaded.</p></li>
-<li><p><strong>username</strong> (<em>str</em>) – The username of the client.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.load_existing_user">
-<span class="sig-name descname"><span class="pre">load_existing_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.load_existing_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.load_existing_user" title="Link to this definition"></a></dt>
-<dd><p>Loads an existing user’s private key from a file.
-If the file doesn’t exist or the passphrase is incorrect, prompts to create a new user.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.receive_messages">
-<span class="sig-name descname"><span class="pre">receive_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.receive_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.receive_messages" title="Link to this definition"></a></dt>
-<dd><p>Receives and displays messages from the server.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.receive_public_key_and_mac_key">
-<span class="sig-name descname"><span class="pre">receive_public_key_and_mac_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.receive_public_key_and_mac_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.receive_public_key_and_mac_key" title="Link to this definition"></a></dt>
-<dd><p>Receives the server’s public key and the encrypted MAC key from the server.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.remove_last_line">
-<span class="sig-name descname"><span class="pre">remove_last_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.remove_last_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.remove_last_line" title="Link to this definition"></a></dt>
-<dd><p>Removes the last line printed on the console.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.send_message">
-<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.send_message" title="Link to this definition"></a></dt>
-<dd><p>Sends messages from the client to the server.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="client1.Client.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#Client.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.Client.start" title="Link to this definition"></a></dt>
-<dd><p>Starts the client.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="client1.decrypt_private_key">
-<span class="sig-prename descclassname"><span class="pre">client1.</span></span><span class="sig-name descname"><span class="pre">decrypt_private_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_key_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passphrase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#decrypt_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.decrypt_private_key" title="Link to this definition"></a></dt>
-<dd><p>Decrypts an encrypted private key using a passphrase.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>encrypted_key_data</strong> (<em>bytes</em>) – The encrypted private key data.</p></li>
-<li><p><strong>passphrase</strong> (<em>str</em>) – The passphrase to decrypt the private key.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The decrypted private key or None if decryption fails.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>RSA.RsaKey or None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="client1.encrypt_private_key">
-<span class="sig-prename descclassname"><span class="pre">client1.</span></span><span class="sig-name descname"><span class="pre">encrypt_private_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">private_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passphrase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client1.html#encrypt_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client1.encrypt_private_key" title="Link to this definition"></a></dt>
-<dd><p>Encrypts a private key using a passphrase.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>private_key</strong> (<em>RSA.RsaKey</em>) – The private key to encrypt.</p></li>
-<li><p><strong>passphrase</strong> (<em>str</em>) – The passphrase to encrypt the private key.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The encrypted private key.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bytes</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="client1-module">
+<h1>client1 module<a class="headerlink" href="#client1-module" title="Link to this heading"></a></h1>
 </section>
 
 
