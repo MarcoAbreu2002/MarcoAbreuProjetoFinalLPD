@@ -97,24 +97,24 @@ def scantcp(r1, r2):
 print('*' * 60)
 print(' \tPort scanner \n ')
 
-d = "I" #input('\tD - Domain Name | I - IP Address\t')
+d = input('\tD - Domain Name | I - IP Address\t')
 if d == 'D' or d == 'd':
-    rmserver = "1" #input('\t Enter the Domain Name to scan:\t')
+    rmserver = input('\t Enter the Domain Name to scan:\t')
     rmip = socket.gethostbyname(rmserver)
 elif d == 'I' or d == 'i':
-    rmip = "O" #input('\t Enter the IP Address to scan: ')
+    rmip = input('\t Enter the IP Address to scan: ')
 else:
     print('Wrong input')
 
-port_start1 = 1 # int(input('\t Enter the start port number\t'))
-port_last1 = 1 #int(input('\t Enter the last port number\t'))
+port_start1 = int(input('\t Enter the start port number\t'))
+port_last1 = int(input('\t Enter the last port number\t'))
 
 if port_last1 > 65535:
     print('Range not Ok')
     port_last1 = 65535
     print('Setting last port 65535')
 
-conect = "L" # input('Low connectivity = L | High connectivity = H \t')
+conect = input('Low connectivity = L | High connectivity = H \t')
 
 if conect == 'L' or conect == 'l':
     c = 1.5
