@@ -23,13 +23,29 @@ pip install -r requirements.txt
 
 ## Utilização
 
-Para começar, execute o programa com o seguinte comando:
+Para começar, navegue até à diretoria do programa. Agora, para instalar todas as dependências necessárias à utilização deste programa deverá seguir os seguintes passos:
+
+**utilizadores de Linux:**
+
+```bash
+chmod +x requirements.sh
+./requirements.sh
+```
+Para **utilizadores de Windows**, execute o seguinte ficheiro:
+
+```bash
+requirements_windows.bat
+```
+
+Certifique-se que possui permissões de administrador e que está a utilizar a versão **mais recente do Python3**.
+
+Por fim, apenas necessita de executar o programa principal, da seguinte forma:
 
 ```bash
 python3 main.py
 ```
 
-Após a execução do programa, você será apresentado ao menu principal, onde poderá escolher entre diversas opções disponíveis.
+Após a execução do programa, será apresentado o menu principal, onde poderá escolher entre diversas opções disponíveis.
 
 ### Detecção e Listagem de Portas Disponíveis
 
