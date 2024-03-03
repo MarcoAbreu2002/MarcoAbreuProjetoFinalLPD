@@ -15,15 +15,7 @@ Para começar, clone o repositório deste projeto no GitHub, disponível em:
 
 [CLONE GIT](https://github.com/MarcoAbreu2002/MarcoAbreuProjetoFinalLPD)
 
-Depois, execute o arquivo de requisitos para instalar todas as dependências necessárias para executar este programa, o que pode ser feito com o seguinte comando:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Utilização
-
-Para começar, navegue até à diretoria do programa. Agora, para instalar todas as dependências necessárias à utilização deste programa deverá seguir os seguintes passos:
+Navegue até à diretoria do programa. Agora, para instalar todas as dependências necessárias à utilização deste programa deverá seguir os seguintes passos:
 
 **utilizadores de Linux:**
 
@@ -46,6 +38,8 @@ python3 main.py
 ```
 
 Após a execução do programa, será apresentado o menu principal, onde poderá escolher entre diversas opções disponíveis.
+
+## Utilização
 
 ### Detecção e Listagem de Portas Disponíveis
 
